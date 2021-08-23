@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% import "macros.html" as macros %}
+
+{% block content %}
+
+<div class="container">
+	<div class="row valign-wrapper">
+		{% if element == 'title' %}
+		<form method="POST" action="{{ url_for('main_bp.modify', id=recipe.id, element='title') }}" class="row col s8 offset-s2 valign-wrapper">
+			{{ title_form.csrf_token }}
+			{{ title_form.name(class = "col s10") }}
+			{{ title_form.submit_title(class = "btn col s2") }}
+		</form>
+		{% else %}
+			<h2 class='title center-align col s7 l8 offset-l1 offset-xl2'>{{ recipe.name }}</h2><a class="btn col s5 l3 xl2" href="{{ url_for('main_bp.modify', id=recipe.id, element='title') }}">modifier le titre</a>
+		{% endif %}
+	</div>
+	<div class="card row">
+		<div class="col s12 m6">
+			{% if element == 'image' %}
+				<form method="POST" action="{{ url_for('main_bp.modify', id=recipe.id, element='image') }}" enctype="multipart/form-data">
+					{{ image_form.csrf_token }}
+					<div class="file-field input-field">
+						<div class="btn">
+							<span>File</span>
+							{{ image_form.photo }}
+						</div>
+						<div class="file-path-wrapper">
+							<input class="file-path validate" type="text">
+						</div>
+					</div>
+					{{ image_form.submit_image(class="btn") }}
+				</form>
+			{% else %}
+				<div class="card">
+					<div class="card-image"><img class='responsive-img' src="{{ url_for('static', filename='media/') }}{{ recipe.photo }}">
+					<a class="image-btn" href="{{ url_for('main_bp.modify', id=recipe.id, element='image') }}">modifier l'image</a></div>
+				</div>
+			{% endif %}
+		</div>
+		<div class="col s12 m6 row">
+			<h4>Ingredients</h4>
+			{% for ingredient in recipe.ingredients %}
+				{% if element == 'ingredients-'~loop.index0 %}
+					<form method="POST" action="{{ url_for('main_bp.modify', id=recipe.id, element=ingredient.id) }}">
+						{{ ingredient_form.csrf_token }}
+						<div class="col s7">
+				            {{ ingredient_form.ing_name.label }}
+				            {{ ingredient_form.ing_name }}
+				        </div>
+				        <div class="col s2">
+				            {{ ingredient_form.quantity.label }}
+				            {{ ingredient_form.quantity(type = "number")}}
+				        </div>
+				        <div class="col s3">
+				            {{ ingredient_form.unity.label }}
+				            {{ ingredient_form.unity(class="select-force-update") }}
+				        </div>
+				        {{ ingredient_form.submit_ingredient(class="btn") }}
+					</form>
+				{% else %}
+					{{ macros.render_ingredient(ingredient, recipe, loop) }}
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+	<div class="card row">
+		<div class="col s12 row">
+			<h4>Étapes</h4>
+			{% for step in recipe.steps %}
+				<h6 class="s12">étape {{loop.index0+1 }}</h6>
+				{% if element == 'steps-'~loop.index0 %}
+					<form method="POST" action="{{ url_for('main_bp.modify', id=recipe.id, element=step.id) }}">
+						{{ step_form.csrf_token }}
+						{{ step_form.step_text(class="materialize-textarea col s9 m10") }}
+						{{ step_form.submit_step(class="btn col s3 m2") }}
+					</form>
+					<p class="col s12">{{ step.step_text }}</p>
+				{% else %}
+					<p class="col s8 m10">{{ step.step_text }}</p>
+					<a href="{{ url_for('main_bp.modify', id=recipe.id, element='steps-'~loop.index0) }}" class = "col s4 m2 btn">modifier</a>
+				{% endif %}
+			{% endfor %}
+		</div>
+
+	</div>
+	<div class="row">
+		<p>recette de {{ recipe.users }}</p>
+	</div>
+
+	<div class="row">
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+			<ul class=flashes>
+				{% for message in messages %}
+					<li>{{ message }}</li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+		{% endwith %}
+	</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% import "macros.html" as macros %}
+
+{% block content %}
+<h1 class="center-align title">Family Recipes</h1>
+
+<div class="container">
+	<div class="row">
+		{% if current_user.is_authenticated %}
+			<div class="col s12 center-align"><a class="btn" href="{{ url_for('main_bp.addrecipe') }}">Ajouter une recette</a></div>
+		{% else %}
+			<div class="col s12 center-align"><a class="btn" href="{{url_for('auth_bp.login')}}">Se Connecter</a></div>
+		{% endif %}
+
+	</div>
+
+	<div class="row">
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+			<ul class=flashes>
+				{% for message in messages %}
+					<li>{{ message }}</li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+		{% endwith %}
+	</div>
+
+	<div class="row">
+	{% for recipe in recipes %}
+		<div class='col s12 m6 l4'>
+			<div class='card'>
+				<a class='card-image waves-effect waves-block waves-light' href="{{ url_for('main_bp.recipe', id = recipe.id) }}">
+					<img src="{{ url_for('static', filename='media/') }}{{ recipe.photo }}">
+					<span class='card-title'>{{ recipe.name }}</span>
+				</a>
+				<div class='card-content'>
+					<p>recette de <a href="{{ url_for('main_bp.user', id=recipe.users.id) }}">{{ recipe.users }}</a></p>
+					<p>durée : {{ macros.render_time(recipe.time) }}</p>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+	</div>
+
+</div>
+{% endblock %}

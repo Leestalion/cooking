@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<article class="container">
+
+	<h3 class='center-align title'>Pour vous connecter, remplissez ces informations</h3>
+	<div class="row">
+	<div class="card col s12 m6 offset-m3">
+	<div class="card-content">
+		<form method="POST" class="col s12">
+			{{ form.csrf_token }}
+			<div class="input-field">
+				{{ form.email.label }}
+				{{ form.email }}
+				{% if form.email.errors %}
+				{% for error in form.email.errors %}
+					<span class="helper-test">{{ error }}</span>
+				{% endfor %}
+				{% endif %}
+			</div>
+			<div class="input-field">
+				{{ form.password.label }}
+				{{ form.password }}
+				{% if form.password.error %}
+				{% for error in form.password.errors %}
+					<span class="helper-test">{{ error }}</span>
+				{% endfor %}
+				{% endif %}
+			</div>
+
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+				<ul class=flashes>
+					{% for message in messages %}
+						<li>{{ message }}</li>
+					{% endfor %}
+				</ul>
+				{% endif %}
+			{% endwith %}
+
+			<div>
+				Pas encore inscrit ? <a href="{{ url_for('auth_bp.register') }}">cliquez ici</a>
+			</div>
+			<div class="input-field">
+				{{ form.submit(class='btn') }}
+			</div>
+		</form>
+	</div>
+	</div>
+	</div>
+
+</article>
+{% endblock %}
