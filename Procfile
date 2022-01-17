@@ -1,1 +1,1 @@
-web: gunicorn app:cookingapp
+web: gunicorn wsgi:cookingapp
