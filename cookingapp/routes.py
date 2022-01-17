@@ -13,6 +13,10 @@ main_bp = Blueprint(
 	static_folder = 'static'
 )
 
+@main_bp.route("/google97a1864ac8cc98b6.html")
+def google_site_verf():
+    return render_template("google97a1864ac8cc98b6.html")
+
 @main_bp.route('/', methods = ['GET'])
 @main_bp.route('/index/', methods = ['GET'])
 def index():
