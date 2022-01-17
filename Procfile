@@ -1,1 +1,1 @@
-web: gunicorn run:cookingapp
+web: gunicorn app:cookingapp
