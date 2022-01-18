@@ -1,9 +1,12 @@
+### flask utils ###
 flask-sqlalchemy
 flask-wtf
 flask
 flask-login
+Flask-MySQL
+
+### python dependencies ###
 gunicorn
 python-dotenv
 email-validator
-Flask-MySQL
 mysqlclient
