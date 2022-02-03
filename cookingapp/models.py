@@ -59,7 +59,7 @@ class Step(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.id'))
 
-	step_text = db.Column(db.String)
+	step_text = db.Column(db.Text())
 
 	# Relationship
 	recipe = db.relationship(

@@ -4,7 +4,6 @@ from flask import render_template, url_for, redirect
 from flask_login import current_user, login_required, logout_user
 from .forms import RecipeForm, IngredientForm, StepForm, ModifyTitleForm, ModifyImageForm, ModifyStepForm, ModifyIngredientForm
 from .models import db, Recipe, Ingredient, Step, User
-from config import UPLOAD_FOLDER
 from werkzeug.utils import secure_filename
 
 main_bp = Blueprint(
@@ -47,7 +46,7 @@ def addrecipe():
 			if (existing_recipe_name is None):
 
 				filename = secure_filename(form.photo.data.filename)
-				form.photo.data.save(path.join(UPLOAD_FOLDER, filename))
+				form.photo.data.save(path.join(app.config["UPLOAD_FOLDER"], filename))
 
 				recipe = Recipe(
 					user_id = current_user.id,
@@ -123,7 +122,7 @@ def modify(id, element):
 	if image_form.submit_image.data and image_form.validate():
 		if image_form.validate_on_submit():
 			filename = secure_filename(image_form.photo.data.filename)
-			image_form.photo.data.save(path.join(UPLOAD_FOLDER, filename))
+			image_form.photo.data.save(path.join(app.config["UPLOAD_FOLDER"], filename))
 
 
 			recipe.photo = filename
@@ -147,7 +146,6 @@ def modify(id, element):
 			ingredient.unity = ingredient_form.unity.data
 			db.session.commit()
 			return redirect("/recipe/"+id+"/modify/success")
-
 			
 
 	return render_template(
@@ -160,3 +158,15 @@ def modify(id, element):
 		step_form = step_form,
 		ingredient_form = ingredient_form
 	)
+
+@main_bp.route('/test/')
+def test():
+	return render_template("test.html")
+
+
+@main_bp.route("/download/<filename>", methods=['GET'])
+def download(filename):
+    if request.method == 'GET':
+        output = download_file(filename, BUCKET)
+
+        return send_file(output, as_attachment=True)
