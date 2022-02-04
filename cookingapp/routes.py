@@ -1,10 +1,15 @@
 from os import path
 from flask import Blueprint, flash, current_app as app
-from flask import render_template, url_for, redirect
+from flask import render_template, url_for, redirect, request
 from flask_login import current_user, login_required, logout_user
-from .forms import RecipeForm, IngredientForm, StepForm, ModifyTitleForm, ModifyImageForm, ModifyStepForm, ModifyIngredientForm
+
+from cookingapp.util.helpers import upload_file_to_s3
+from .forms import RecipeForm, IngredientForm, StepForm, ModifyTitleForm, ModifyImageForm, ModifyStepForm, ModifyIngredientForm, TestForm
 from .models import db, Recipe, Ingredient, Step, User
 from werkzeug.utils import secure_filename
+
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 main_bp = Blueprint(
 	'main_bp', __name__,
@@ -159,14 +164,37 @@ def modify(id, element):
 		ingredient_form = ingredient_form
 	)
 
-@main_bp.route('/test/')
+@main_bp.route('/test/', methods=["GET", "POST"])
 def test():
-	return render_template("test.html")
+	form = TestForm()
+
+	if form.validate_on_submit():
+		file = form.photo.data
+
+		if file.filename == '':
+				flash('No selected file')
+				return redirect(url_for('main_bp.index'))
+
+		# check wether the file extension is allowed (eg. png, jpeg, jpg, gif)
+		if file and allowed_file(file.filename):
+			output = upload_file_to_s3(file)
+
+			# if upload success, will return file name of uploaded file
+			if output:
+				flash("Success upload")
+				return redirect(url_for('main_bp.index'))
+
+			# upload failed, redirect to upload page
+			else:
+				flash("Unable to upload, try again")
+				return redirect(url_for('main_bp.index'))
+
+	return render_template(
+		"test.html",
+		form = form
+	)
 
 
-@main_bp.route("/download/<filename>", methods=['GET'])
-def download(filename):
-    if request.method == 'GET':
-        output = download_file(filename, BUCKET)
-
-        return send_file(output, as_attachment=True)
+def allowed_file(filename):
+	return '.' in filename and \
+		filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

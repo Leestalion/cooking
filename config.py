@@ -38,3 +38,4 @@ class Config:
 	# AWS parameters
 	AWS_SECRET_ACCESS_KEY = environ.get("AWS_SECRET_ACCESS_KEY")
 	AWS_ACCESS_KEY = environ.get("AWS_ACCESS_KEY")
+	AWS_BUCKET_NAME = environ.get("AWS_BUCKET_NAME")
