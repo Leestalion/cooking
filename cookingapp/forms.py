@@ -145,3 +145,12 @@ class ModifyIngredientForm(FlaskForm):
 		choices=[(0, 'unité'), (1, 'g'), (2, 'mL'), (3, 'cL')]
 	)
 	submit_ingredient = SubmitField('Valider')
+
+
+
+class TestForm(FlaskForm):
+	photo = FileField(
+		'photo',
+		validators=[FileRequired(), FileAllowed(['jpg', 'png', 'jpeg', 'gif'], 'images seulement au format jpg ou png')]
+	)
+	submit = SubmitField('Valider')
