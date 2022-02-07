@@ -1,7 +1,9 @@
-import boto3, botocore
+import boto3
 from flask import current_app as app
-import os, sys
+import sys
 from werkzeug.utils import secure_filename
+import requests
+from oauthlib.oauth2 import WebApplicationClient
 
 s3 = boto3.client(
     "s3",
@@ -29,3 +31,9 @@ def upload_file_to_s3(file, acl="public-read"):
         return e;
     
     return file.filename
+
+def get_google_provider_cfg():
+    return requests.get(app.config["GOOGLE_DISCOVERY_URL"]).json()
+
+
+client = WebApplicationClient(app.config["GOOGLE_CLIENT_ID"])

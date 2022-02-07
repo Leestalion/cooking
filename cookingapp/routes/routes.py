@@ -1,12 +1,16 @@
 from os import path
 from flask import Blueprint, flash, current_app as app
-from flask import render_template, url_for, redirect, request
+from flask import render_template, url_for, redirect
 from flask_login import current_user, login_required, logout_user
 
-from cookingapp.util.helpers import upload_file_to_s3
-from .forms import RecipeForm, IngredientForm, StepForm, ModifyTitleForm, ModifyImageForm, ModifyStepForm, ModifyIngredientForm, TestForm
-from .models import db, Recipe, Ingredient, Step, User
+from cookingapp.utils.helpers import upload_file_to_s3
+from ..utils.forms import RecipeForm, IngredientForm, StepForm, ModifyTitleForm, ModifyImageForm, ModifyStepForm, ModifyIngredientForm, TestForm
+from ..models.user import User
+from ..models.recipe import Recipe
+from ..models.ingredient import Ingredient
+from ..models.step import Step
 from werkzeug.utils import secure_filename
+from .. import db
 
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -34,7 +38,7 @@ def index():
 @login_required
 def logout():
 	logout_user()
-	return redirect(url_for('auth_bp.login'))
+	return redirect(url_for('main_bp.index'))
 
 @main_bp.route("/addrecipe/", methods=['GET', 'POST'])
 @login_required

@@ -39,3 +39,8 @@ class Config:
 	AWS_SECRET_ACCESS_KEY = environ.get("AWS_SECRET_ACCESS_KEY")
 	AWS_ACCESS_KEY = environ.get("AWS_ACCESS_KEY")
 	AWS_BUCKET_NAME = environ.get("AWS_BUCKET_NAME")
+
+	# Google parameters
+	GOOGLE_CLIENT_ID = environ.get("GOOGLE_CLIENT_ID")
+	GOOGLE_CLIENT_SECRET = environ.get("GOOGLE_CLIENT_SECRET")
+	GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"

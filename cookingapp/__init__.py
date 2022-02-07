@@ -9,7 +9,6 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 csrf = CSRFProtect()
 
-
 def create_app():
     """Initialize the core application."""
     app = Flask(__name__, 
@@ -26,8 +25,8 @@ def create_app():
 
     with app.app_context():
         # Include our Routes
-        from . import routes
-        from . import auth
+        from .routes import routes
+        from .routes import auth
 
         # Register Blueprints
         app.register_blueprint(routes.main_bp)
