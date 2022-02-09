@@ -57,7 +57,6 @@ def callback():
 		redirect_url=request.base_url,
 		code=code
 	)
-	print(token_url, headers, body)
 	try:
 		token_response = requests.post(
 			token_url,
@@ -67,7 +66,6 @@ def callback():
 		)
 	except Exception as error:
 		print(error)
-	print("token_response :", token_response.json())
 	# Parse the tokens
 	try:
 		client.parse_request_body_response(json.dumps(token_response.json()))
