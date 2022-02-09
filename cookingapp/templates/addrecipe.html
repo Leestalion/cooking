@@ -44,15 +44,14 @@
 			</div>
 			</div>
 
-
-			<div class="row btn" id="addIngredient">
-				ajouter un ingrédient
-			</div>
 			{# Show all ingredient subforms #}
 			<div id="ingredient_subforms_container" class="row">
 				{% for subform_ing in form.ingredients %}
 					{{ macros.render_ingredient_form(subform_ing, loop.index0) }}
 				{% endfor %}
+				<div class="btn-floating btn-large col s2 m1" id="addIngredient">
+					<i class="large material-icons">add</i>
+				</div>
 			</div>
 
 			<div class="row btn" id="addStep">

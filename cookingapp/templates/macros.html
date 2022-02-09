@@ -10,7 +10,7 @@ Arguments:
              '_'
 #}
 {%- macro render_ingredient_form(subform, index) %}
-    <div id="ingredient-{{ index }}-form" class="{% if index != '_' %}subform_ing{% else %}is-hidden{% endif %} col s12 m6" data-index="{{ index }}">
+    <div id="ingredient-{{ index }}-form" class="{% if index != '_' %}subform_ing{% else %}is-hidden{% endif %} col s10 m5" data-index="{{ index }}">
         <div class="col s7">
             {{ subform.ing_name.label }}
             {{ subform.ing_name }}

@@ -7,6 +7,7 @@ from cookingapp.utils.helpers import upload_file_to_s3
 from ..utils.forms import RecipeForm, IngredientForm, StepForm, ModifyTitleForm, ModifyImageForm, ModifyStepForm, ModifyIngredientForm, TestForm
 from ..models.user import User
 from ..models.recipe import Recipe
+from ..models.recipe_ingredient import RecipeIngredient
 from ..models.ingredient import Ingredient
 from ..models.step import Step
 from werkzeug.utils import secure_filename
@@ -68,7 +69,7 @@ def addrecipe():
 				db.session.add(recipe)
 
 				for ingredient in form.ingredients.data:
-					new_ingredient = Ingredient(**ingredient)
+					new_ingredient = RecipeIngredient(**ingredient)
 					# Add to recipe
 					recipe.ingredients.append(new_ingredient)
 
@@ -149,7 +150,7 @@ def modify(id, element):
 	if ingredient_form.submit_ingredient.data and ingredient_form.validate():
 		if ingredient_form.validate_on_submit():
 			flash("on est là")
-			ingredient = Ingredient.query.get(element)
+			ingredient = RecipeIngredient.query.get(element)
 			ingredient.ing_name = ingredient_form.ing_name.data
 			ingredient.quantity = ingredient_form.quantity.data
 			ingredient.unity = ingredient_form.unity.data

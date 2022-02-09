@@ -1,9 +1,9 @@
 """Routes for user authentification."""
-from flask import Blueprint, jsonify, render_template, redirect, flash, url_for, request, current_app as app
+from flask import Blueprint, render_template, redirect, flash, url_for, request, current_app as app
 from flask_login import current_user, login_user
 
 from cookingapp.utils.helpers import get_google_provider_cfg
-from ..utils.forms import RegisterForm, LoginForm
+from ..utils.forms import RegisterForm
 from ..utils.helpers import client
 from .. import db
 from ..models.user import User
@@ -36,19 +36,9 @@ def login():
 
 	request_uri = client.prepare_request_uri(
 		authorization_endpoint,
-		redirect_uri=request.base_url+"callback",
+		redirect_uri=request.base_url+"callback/",
 		scope=["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"],
 	)
-
-	# form = LoginForm()
-	# # Validate login attempt
-	# if form.validate_on_submit():
-	# 	print("start")
-	# 	user = User.query.filter_by(email=form.email.data).first()
-	# 	if user and user.check_password(password=form.password.data):
-	# 		login_user(user)
-	# 		return redirect(url_for('main_bp.index'))
-	# 	flash('combinaison email/mot de pass inconnue')
 	return redirect(request_uri)
 
 
@@ -86,18 +76,19 @@ def callback():
 	# hit the URL from Google that gives the user's profile info
 	userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
 	uri, headers, body = client.add_token(userinfo_endpoint)
-	userinfo_response = request.get(uri, headers=headers, data=body)
+	userinfo_response = requests.get(uri, headers=headers, data=body)
 	# verify email
 	if userinfo_response.json().get("email_verified"):
 		unique_id = userinfo_response.json()["sub"]
-		users_email = userinfo_response.json()["picture"]
+		users_email = userinfo_response.json()["email"]
 		picture = userinfo_response.json()["picture"]
 		users_name = userinfo_response.json()["given_name"]
 	else:
 		return "User email not available or not verified by Google.", 400
 	
-	user = User.query.filter_by(id_=unique_id).first()
-	if not user :
+	user = User(unique_id, users_name, users_email, picture)
+	temp = User.query.filter_by(user_id=unique_id).first()
+	if not temp :
 		# if user does not exists, login user
 		User.create(unique_id, users_name, users_email, picture)
 	

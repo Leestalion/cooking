@@ -25,10 +25,10 @@ class Config:
 		MYSQL_PASSWORD = environ.get("MYSQL_PASSWORD_DEVELOPMENT")
 		MYSQL_DB =  environ.get('MYSQL_DB_DEVELOPMENT')
 	elif (FLASK_ENV == PRODUCTION):
-		MYSQL_HOST =  environ.get('MYSQL_HOST_TEST')
-		MYSQL_USER = environ.get("MYSQL_USER_TEST")
-		MYSQL_PASSWORD = environ.get("MYSQL_PASSWORD_TEST")
-		MYSQL_DB =  environ.get('MYSQL_DB_TEST')
+		MYSQL_HOST =  environ.get('MYSQL_HOST_PROD')
+		MYSQL_USER = environ.get("MYSQL_USER_PROD")
+		MYSQL_PASSWORD = environ.get("MYSQL_PASSWORD_PROD")
+		MYSQL_DB =  environ.get('MYSQL_DB_PROD')
 
 	# SQL Alchemy parameters
 	SQLALCHEMY_ECHO = False
