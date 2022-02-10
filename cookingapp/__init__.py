@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
+from flask_assets import Environment, Bundle
 
 
 # Globally accessible libraries
@@ -22,6 +23,19 @@ def create_app():
     csrf.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
+    assets = Environment(app)
+
+    css = Bundle(
+        'src/main.css',
+        filters='postcss',
+        output='dist/main.css'
+    )
+
+    # Register bundle
+    assets.register('css', css)
+
+    # Build bundle
+    css.build()
 
     with app.app_context():
         # Include our Routes
