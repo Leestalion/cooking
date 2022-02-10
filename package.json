@@ -1,5 +1,19 @@
 {
-    "scripts": {
-        "postinstall": "cd cookingapp/static && npm install"
-    }
+  "scripts": {
+    "postinstall": "cd cookingapp/static && npm install"
+  },
+  "name": "cooking",
+  "description": "pip freeze | Out-File -Encoding UTF8 requirements.txt",
+  "version": "1.0.0",
+  "main": "postinstall",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Leestalion/cooking.git"
+  },
+  "author": "Thomas Le Marrec",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Leestalion/cooking/issues"
+  },
+  "homepage": "https://github.com/Leestalion/cooking#readme"
 }
