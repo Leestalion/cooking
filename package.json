@@ -3,7 +3,6 @@
     "postinstall": "cd cookingapp/static && npm install"
   },
   "name": "cooking",
-  "description": "pip freeze | Out-File -Encoding UTF8 requirements.txt",
   "version": "1.0.0",
   "main": "postinstall",
   "repository": {
