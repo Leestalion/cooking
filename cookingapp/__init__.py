@@ -2,13 +2,15 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
-from flask_assets import Environment, Bundle
+from flask_assets import Environment
+from .assets import compile_static_assets
 
 
 # Globally accessible libraries
 db = SQLAlchemy()
 login_manager = LoginManager()
 csrf = CSRFProtect()
+assets = Environment()
 
 def create_app():
     """Initialize the core application."""
@@ -23,19 +25,7 @@ def create_app():
     csrf.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
-    assets = Environment(app)
-
-    css = Bundle(
-        'src/main.css',
-        filters='postcss',
-        output='dist/main.css'
-    )
-
-    # Register bundle
-    assets.register('css', css)
-
-    # Build bundle
-    css.build()
+    assets.init_app(app)
 
     with app.app_context():
         # Include our Routes
@@ -45,6 +35,9 @@ def create_app():
         # Register Blueprints
         app.register_blueprint(routes.main_bp)
         app.register_blueprint(auth.auth_bp)
+
+        # compile the assets (only in dev env)
+        compile_static_assets(assets)
 
         # Create Database Models
         db.create_all()

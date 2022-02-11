@@ -16,7 +16,7 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
+src/
 downloads/
 eggs/
 .eggs/
@@ -143,5 +143,9 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# Node modules
+# Node and npm
 node_modules
+package.json
+postcss.config.js
+tailwind.config.js
+package-lock.json
