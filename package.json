@@ -1,6 +1,7 @@
 {
   "scripts": {
     "start-dev-client": "cd client && npm run serve",
-    "start-dev-server": "cd client && npm run start-dev"
+    "start-dev-server": "cd client && npm run start-dev",
+    "start": "cd client && npm start"
   }
 }
