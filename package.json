@@ -3,6 +3,9 @@
     "start-dev-client": "cd client && npm run serve",
     "start-dev-server": "cd client && npm run start-dev",
     "build": "cd client && npm run build",
-    "start": "cd client && npm start"
+    "start": "gunicorn server.wsgi:app"
+  },
+  "engines": {
+      "node": "16.x"
   }
 }
