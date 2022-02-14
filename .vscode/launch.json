@@ -6,7 +6,7 @@
     "configurations": [
         
         {
-            "name": "Python : Flask",
+            "name": "Flask",
             "type": "python",
             "request": "launch",
             "module": "flask",
@@ -19,6 +19,22 @@
                 "--cert=adhoc",
             ],
             "jinja": true
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Tailwind",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run-script",
+                "dev"
+            ]
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Flask and Tailwind",
+            "configurations": ["Flask", "Tailwind"]
         }
     ]
 }

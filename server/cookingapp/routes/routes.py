@@ -1,5 +1,5 @@
 from os import path
-from flask import Blueprint, flash, current_app as app
+from flask import Blueprint, flash, current_app as app, jsonify
 from flask import render_template, url_for, redirect
 from flask_login import current_user, login_required, logout_user
 
@@ -16,11 +16,17 @@ from .. import db
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
+
 main_bp = Blueprint(
 	'main_bp', __name__,
 	template_folder = 'templates',
 	static_folder = 'static'
 )
+
+# sanity check route
+@main_bp.route("/ping", methods=['GET'])
+def ping_pong():
+	return jsonify('pong!')
 
 @main_bp.route("/google97a1864ac8cc98b6.html")
 def google_site_verf():
@@ -103,10 +109,10 @@ def recipe(id):
 		recipe = recipe
 	)
 
-@main_bp.route('/user/<id>', methods = ['GET'])
-def user(id):
-	user = User.query.filter_by(id=id).first_or_404()
-	recipes = Recipe.query.filter_by(user_id=id)
+@main_bp.route('/user/<user_id>', methods = ['GET'])
+def user(user_id):
+	user = User.query.filter_by(user_id=user_id).first_or_404()
+	recipes = Recipe.query.filter_by(user_id=user_id)
 	return render_template(
 		"user.html", 
 		current_user=current_user,

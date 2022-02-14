@@ -1,3 +1,4 @@
+from .fields import CustomRadioField
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, PasswordField, SelectField, IntegerField, RadioField, FieldList, FormField, TimeField, FileField
 from wtforms.validators import  DataRequired, Length, Email, EqualTo
@@ -58,15 +59,15 @@ class IngredientForm(FlaskForm):
 		csrf = False
 
 	ing_name = StringField(
-		'ingrédient',
+		'Nom de l\'ingrédient',
 		validators=[DataRequired(), Length(max=255)]
 	)
 	quantity = IntegerField(
-		'quantité',
+		'Quantité',
 		validators=[DataRequired()]
 	)
 	unity = SelectField(
-		'unité', 
+		'Unité', 
 		choices=[(0, 'unité'), (1, 'g'), (2, 'mL'), (3, 'cL')]
 	)
 
@@ -84,17 +85,17 @@ class StepForm(FlaskForm):
 class RecipeForm(FlaskForm):
 	"""Parent form"""
 	name = StringField(
-		'nom de la recette',
+		'Nom de la recette',
 		validators=[
 			DataRequired()
 		]
 	)
 	difficulty = RadioField(
-		'difficulté',
+		'Difficulté',
 		choices=[(0, 'facile'), (1, 'moyen'), (2, 'difficile')]
 	)
 	time_ = TimeField(
-		'temps requis'
+		'Temps requis'
 	)
 	ingredients = FieldList(
 		FormField(IngredientForm),
@@ -105,14 +106,14 @@ class RecipeForm(FlaskForm):
 		min_entries=1
 	)
 	photo = FileField(
-		'photo',
+		'Image',
 		validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'images seulement au format jpg ou png')]
 	)
 	submit = SubmitField('Valider')
 
 class ModifyTitleForm(FlaskForm):
 	name = StringField(
-		'nouveau nom',
+		'Nouveau nom',
 		validators=[
 			DataRequired()
 		]
@@ -121,7 +122,7 @@ class ModifyTitleForm(FlaskForm):
 
 class ModifyImageForm(FlaskForm):
 	photo = FileField(
-		'photo',
+		'Image',
 		validators=[FileRequired(), FileAllowed(['jpg', 'png'], 'images seulement au format jpg ou png')]
 	)
 	submit_image = SubmitField('Valider')
@@ -133,7 +134,7 @@ class ModifyStepForm(FlaskForm):
 
 class ModifyIngredientForm(FlaskForm):
 	ing_name = StringField(
-		'ingrédient',
+		'nom de l\'ingrédient',
 		validators=[DataRequired(), Length(max=255)]
 	)
 	quantity = IntegerField(

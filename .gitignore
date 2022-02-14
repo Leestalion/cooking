@@ -143,9 +143,8 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# Node and npm
+# Node and npm (build is done only locally)
 node_modules
-package.json
 postcss.config.js
 tailwind.config.js
 package-lock.json

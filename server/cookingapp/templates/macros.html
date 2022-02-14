@@ -12,15 +12,17 @@ Arguments:
 {%- macro render_ingredient_form(subform, index) %}
     <div id="ingredient-{{ index }}-form" class="{% if index != '_' %}subform_ing{% else %}is-hidden{% endif %} col s10 m5" data-index="{{ index }}">
         <div class="col s7">
-            {{ subform.ing_name.label }}
-            {{ subform.ing_name }}
+            {{ subform.ing_name.label(class="block text-tblack-400 text-md font-bold mb-3") }}
+            {{ subform.ing_name(class="bg-tblack-50 rounded py-2 px-3 text-tblack-400 leading-tight
+            border border-tblack-50 focus:outline-none focus:bg-white focus:border-tblack-500") }}
         </div>
         <div class="col s2">
-            {{ subform.quantity.label }}
-            {{ subform.quantity(type = "number")}}
+            {{ subform.quantity.label(class="block text-tblack-400 text-md font-bold mb-3") }}
+            {{ subform.quantity(type = "number", class="bg-tblack-50 rounded py-2 px-3 text-tblack-400 leading-tight
+            border border-tblack-50 focus:outline-none focus:bg-white focus:border-tblack-500")}}
         </div>
         <div class="col s3">
-            {{ subform.unity.label }}
+            {{ subform.unity.label(class="block text-tblack-400 text-md font-bold mb-3") }}
             {{ subform.unity }}
         </div>
 
