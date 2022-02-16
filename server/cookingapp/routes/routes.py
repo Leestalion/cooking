@@ -1,6 +1,7 @@
 from os import path
 from flask import Blueprint, flash, current_app as app, jsonify
 from flask import render_template, url_for, redirect
+from flask_cors import cross_origin
 from flask_login import current_user, login_required, logout_user
 
 from cookingapp.utils.helpers import upload_file_to_s3
@@ -24,7 +25,8 @@ main_bp = Blueprint(
 )
 
 # sanity check route
-@main_bp.route("/ping", methods=['GET'])
+@main_bp.route("/api/ping", methods=['GET'])
+@cross_origin(origin='*', headers=['Content-Type'])
 def ping_pong():
 	return jsonify('pong!')
 

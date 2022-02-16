@@ -2,10 +2,10 @@
   "scripts": {
     "start-dev-client": "cd client && npm run serve",
     "start-dev-server": "cd client && npm run start-dev",
-    "build-dev": "cd client && npm run build",
-    "start": "cd server && gunicorn server.wsgi:app"
+    "lint": "cd client && npm run lint",
+    "build-dev": "cd client && npm run build"
   },
   "engines": {
-      "node": "16.x"
+      "node": "17.x"
   }
 }

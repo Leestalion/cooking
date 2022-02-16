@@ -26,7 +26,6 @@ itsdangerous==2.0.1
 Jinja2==3.0.3
 jmespath==0.10.0
 jsmin==3.0.1
-lesscpy==0.15.0
 MarkupSafe==2.0.1
 mysqlclient==2.1.0
 oauthlib==3.2.0
