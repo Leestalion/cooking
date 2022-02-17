@@ -1,1 +1,1 @@
-web: cd server && export FLASK_APP=cookingapp && flask init-db && gunicorn dispatcher:app --log-file -
+web: cd server && export FLASK_APP=cookingapp && gunicorn dispatcher:app --log-file -
