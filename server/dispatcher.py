@@ -8,10 +8,10 @@ from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from cookingapp import create_app
 
 frontend = SharedDataMiddleware(NotFound(), {
-    '/js/': '../frontend/dist/js',
-    '/css/': '../frontend/dist/css',
-    '/img/': '../frontend/dist/img',
-    '/': '../frontend/dist/index.html'
+    '/js/': '../client/dist/js',
+    '/css/': '../client/dist/css',
+    '/img/': '../client/dist/img',
+    '/': '../client/dist/index.html'
 })
 
 app = DispatcherMiddleware(frontend, {'/api': create_app()})
