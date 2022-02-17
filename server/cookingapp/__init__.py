@@ -2,27 +2,22 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
-from flask_cors import CORS
 
 # Globally accessible libraries
 db = SQLAlchemy()
 login_manager = LoginManager()
 csrf = CSRFProtect()
-cors = CORS();
 
 def create_app():
     """Initialize the core application."""
     app = Flask(__name__, 
-        static_folder='../../client/dist/',
-        static_url_path='/',
-        instance_relative_config=False
+        instance_relative_config=True
     )
     app.config.from_object('config.Config')
     # Initialize Plugins
     csrf.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
-    cors.init_app(app, resources={r'/api*': {'origins': '*'}})
 
     with app.app_context():
         # Include our Routes

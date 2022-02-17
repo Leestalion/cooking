@@ -1,11 +1,7 @@
 {
+  "name": "flask-vue-example",
+  "engines": {"yarn": ">=1.19"},
   "scripts": {
-    "start-dev-client": "cd client && npm run serve",
-    "start-dev-server": "cd client && npm run start-dev",
-    "lint": "cd client && npm run lint",
-    "build-dev": "cd client && npm run build"
-  },
-  "engines": {
-      "node": "17.x"
+    "postinstall": "cd frontend && yarn install && yarn build"
   }
 }
