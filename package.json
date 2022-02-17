@@ -2,6 +2,6 @@
   "name": "flask-vue-example",
   "engines": {"yarn": ">=1.19"},
   "scripts": {
-    "postinstall": "cd frontend && yarn install && yarn build"
+    "postinstall": "cd client && yarn install && yarn build"
   }
 }
