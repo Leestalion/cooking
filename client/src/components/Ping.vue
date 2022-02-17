@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     getMessage() {
-      const path = 'http://127.0.0.1:5000/api/ping';
+      const path = 'http://127.0.0.1/api/ping';
       axios.get(path)
         .then((res) => {
           this.msg = res.data;
