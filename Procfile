@@ -1,1 +1,1 @@
-web: npm start
+web: cd backend && export FLASK_APP=cookingapp && flask init-db && gunicorn dispatcher:app --log-file -
