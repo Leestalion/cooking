@@ -25,7 +25,7 @@ main_bp = Blueprint(
 )
 
 # sanity check route
-@main_bp.route("/api/ping", methods=['GET'])
+@main_bp.route("/ping", methods=['GET'])
 @cross_origin(origin='*', headers=['Content-Type'])
 def ping_pong():
 	return jsonify('pong!')
