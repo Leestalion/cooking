@@ -22,8 +22,12 @@ export default {
           this.msg = res.data;
         })
         .catch((error) => {
-          // eslint-disable-next-line
-          console.error(error);
+          if (!error.response) {
+              // network error
+              this.errorStatus = 'Error: Network Error';
+          } else {
+              this.errorStatus = error.response.data.message;
+          }
         });
     },
   },
