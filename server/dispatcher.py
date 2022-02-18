@@ -8,9 +8,7 @@ from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from cookingapp import create_app
 
 frontend = SharedDataMiddleware(NotFound(), {
-    '/js/': '../client/dist/js',
-    '/css/': '../client/dist/css',
-    '/img/': '../client/dist/img',
+    '/assets/': '../client/dist/assets',
     '/': '../client/dist/index.html'
 })
 
