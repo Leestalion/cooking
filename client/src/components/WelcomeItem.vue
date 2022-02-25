@@ -86,10 +86,18 @@ h3 {
 </style>
 
 <script>
+import { authAPI } from "@/services/auth.api";
 
 export default{
-  mounted() {
-    console.log(import.meta.env.VITE_API_URL);
+  data() {
+    return {
+      pong: null
+    };
+  },
+  async created() {
+    const pong = await authAPI.ping();
+    if (authAPI.error) console.log(authAPI.error);
+    else this.pong = pong;
   },
 }
 </script>

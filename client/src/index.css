@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .btn-primary {
+        @apply px-6
+                py-2.5
+                bg-m-orange-500
+                border-2
+                border-m-orange-500
+                text-white
+                font-medium
+                text-xs
+                leading-tight
+                uppercase
+                rounded
+                shadow-md
+                hover:bg-m-orange-600 hover:shadow-lg hover:border-m-orange-600
+                focus:bg-m-orange-600 focus:shadow-lg focus:outline-none focus:ring-0 focus:border-m-orange-600
+                active:bg-m-orange-700 active:shadow-lg active:border-m-orange-700
+                transition
+                duration-150
+                ease-in-out
+    }
+
+    .btn-secondary {
+        @apply px-6 border-2 
+				border-m-orange-500 font-bold
+				py-2.5
+				text-m-orange-500
+				text-xs
+				leading-tight
+				uppercase
+				rounded
+				shadow-md
+				hover:shadow-lg hover:border-m-orange-600 hover:bg-black hover:bg-opacity-10 hover:text-m-orange-600
+				focus:bg-black focus:bg-opacity-10 focus:shadow-lg focus:outline-none focus:ring-0
+				active:bg-black active:shadow-lg active:bg-opacity-20 active:border-m-orange-700 active:text-m-orange-700
+				transition
+				duration-150
+				ease-in-out
+    }
+}
