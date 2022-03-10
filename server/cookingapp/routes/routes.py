@@ -3,6 +3,7 @@ from flask import Blueprint, flash, current_app as app, jsonify
 from flask import render_template, url_for, redirect
 from flask_cors import cross_origin
 from flask_login import current_user, login_required, logout_user
+from flask_jwt_extended import jwt_required
 
 from cookingapp.utils.helpers import upload_file_to_s3
 from ..utils.forms import RecipeForm, IngredientForm, StepForm, ModifyTitleForm, ModifyImageForm, ModifyStepForm, ModifyIngredientForm, TestForm
@@ -26,7 +27,6 @@ main_bp = Blueprint(
 
 # sanity check route
 @main_bp.route("/ping", methods=['GET'])
-@cross_origin(origin='*', headers=['Content-Type'])
 def ping_pong():
 	return jsonify('pong!')
 
@@ -43,8 +43,8 @@ def index():
     	recipes = Recipe.query
     )
 
-@main_bp.route("/logout/")
-@login_required
+@main_bp.route("/logout-old")
+@jwt_required
 def logout():
 	logout_user()
 	return redirect(url_for('main_bp.index'))

@@ -1,14 +1,17 @@
+from os import environ
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 from flask_wtf import CSRFProtect
+from flask_wtf.csrf import generate_csrf
 from flask_cors import CORS
+from sqlalchemy import true
+from flask_jwt_extended import JWTManager
 
 # Globally accessible libraries
 db = SQLAlchemy()
-login_manager = LoginManager()
 csrf = CSRFProtect()
-cors = CORS();
+cors = CORS()
+jwt =  JWTManager()
 
 def create_app():
     """Initialize the core application."""
@@ -19,8 +22,13 @@ def create_app():
     # Initialize Plugins
     csrf.init_app(app)
     db.init_app(app)
-    login_manager.init_app(app)
-    cors.init_app(app, resources={r'/api*': {'origins': '*'}})
+    cors.init_app(app, supports_credentials = True)
+    jwt.init_app(app)
+
+    @app.after_request
+    def set_csrf_cookie(response):
+        response.set_cookie('XSRF-TOKEN', generate_csrf())
+        return response
 
     with app.app_context():
         # Include our Routes

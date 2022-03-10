@@ -1,6 +1,7 @@
 from base64 import encode
 from os import environ, path
 from dotenv import load_dotenv
+import datetime
 
 basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, '.env'))
@@ -20,6 +21,7 @@ class Config:
 
     # MYSQL database parameters
 	if(FLASK_ENV == DEVELOPMENT):
+		DEBUG = True
 		MYSQL_HOST =  environ.get('MYSQL_HOST_DEVELOPMENT')
 		MYSQL_USER = environ.get("MYSQL_USER_DEVELOPMENT")
 		MYSQL_PASSWORD = environ.get("MYSQL_PASSWORD_DEVELOPMENT")
@@ -45,4 +47,15 @@ class Config:
 	GOOGLE_CLIENT_SECRET = environ.get("GOOGLE_CLIENT_SECRET")
 	GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
 
-	CORS_HEADERS = "Content-Type"
+	# JWT Settings
+	JWT_SECRET_KEY = environ.get("JWT_SECRET_KEY")
+	JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=10)
+
+	WTF_CSRF_HEADERS = ['X-XSRF-TOKEN']
+	WTF_CSRF_TIME_LIMIT = None
+	SECURITY_CSRF_COOKIE_NAME = "XSRF-TOKEN"
+	SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS = True
+
+	# CORS Settings
+	CORS_ORIGINS = environ.get("CORS_ORIGINS")
+	CORS_SUPPORT_CREDENTIALS = environ.get("CORS_SUPPORT_CREDENTIALS")

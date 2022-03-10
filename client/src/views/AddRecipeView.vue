@@ -1,9 +1,9 @@
 <script setup>
 import HeaderVue from '../components/Header.vue';
-import AddRecipeButtonVue from '../components/AddRecipeButton.vue';
+import AddRecipeFormVue from '../components/AddRecipeForm.vue';
 </script>
 
 <template>
   <HeaderVue></HeaderVue>
-  <AddRecipeButtonVue></AddRecipeButtonVue>
+  <AddRecipeFormVue></AddRecipeFormVue>
 </template>

@@ -86,7 +86,7 @@ h3 {
 </style>
 
 <script>
-import { authAPI } from "@/services/auth.api";
+import { authService } from "@/services/auth.api";
 
 export default{
   data() {
@@ -95,8 +95,8 @@ export default{
     };
   },
   async created() {
-    const pong = await authAPI.ping();
-    if (authAPI.error) console.log(authAPI.error);
+    const pong = await authService.ping();
+    if (authService.error) console.log(authService.error);
     else this.pong = pong;
   },
 }

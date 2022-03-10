@@ -1,15 +1,30 @@
 """Routes for user authentification."""
-from flask import Blueprint, render_template, redirect, flash, url_for, request, current_app as app
+from os import access
+import re
+from venv import create
+from flask import Blueprint, jsonify, render_template, redirect, flash, url_for, request, current_app as app
+from flask_cors import cross_origin
 from flask_login import current_user, login_user
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
+from ..schemas.schemas import user_schema
 from cookingapp.utils.helpers import get_google_provider_cfg
 from ..utils.forms import RegisterForm
 from ..utils.helpers import client
 from .. import db
 from ..models.user import User
-from .. import login_manager
 import json
 import requests
+
+
+ERROR_NO_EMAIL = 400
+ERROR_NO_PASSWORD = 401
+ERROR_NO_USER_FOUND_WITH_EMAIL = 402
+ERROR_NO_NAME = 403
+EMAIL_ALREADY_IN_USE = 404
+NAME_ALREADY_IN_USE = 405
+WRONG_CREDENTIALS = 406
+
 
 # Blueprint Configuration
 auth_bp = Blueprint(
@@ -18,28 +33,48 @@ auth_bp = Blueprint(
 	static_folder='static'
 )
 
-@auth_bp.route('/login/', methods=['GET', 'POST'])
+@auth_bp.route('/login', methods=['POST'])
 def login():
 	"""
-	Login page for registered users.
-
-	GET requests serve login page
-	POST requests validate and redirect user to index.
+	Login : send the JWT token with the user corresponding to the demanded user.
 	"""
-	# Bypass if user is logged in
-	if current_user.is_authenticated: 
-		return redirect(url_for('main_bp.index'))
 
-	# define Google login URL
-	google_provider_cfg = get_google_provider_cfg()
-	authorization_endpoint = google_provider_cfg["authorization_endpoint"]
+	# get requests objects 
 
-	request_uri = client.prepare_request_uri(
-		authorization_endpoint,
-		redirect_uri=request.base_url+"callback/",
-		scope=["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"],
-	)
-	return redirect(request_uri)
+	data = request.get_json()
+	email = data['email']
+	password = data['password']
+
+	if not email:
+		return jsonify({"error": ERROR_NO_EMAIL}), 200
+	if not password:
+		return jsonify({"error": ERROR_NO_PASSWORD}), 200
+
+	existing_user_mail = User.query.filter_by(email = email).first()
+	if (not existing_user_mail):
+		return jsonify({"error": ERROR_NO_USER_FOUND_WITH_EMAIL}), 200
+
+	user = User.authenticate(email, password)
+
+	if not user:
+		return jsonify({'error': WRONG_CREDENTIALS}), 200
+
+	access_token = create_access_token(identity = user.get_id())
+	response = jsonify({'access_token': access_token, 'user': user_schema.dump(user)})
+	return response, 200
+
+
+@auth_bp.route("/logout", methods=['POST'])
+@jwt_required()
+def logout():
+	return jsonify({'success': 'logged out'}), 200
+
+@auth_bp.route('/protected', methods=['GET'])
+@jwt_required()
+def protected():
+	# access the identity of the current user with get_jwt_identity
+	current_user = get_jwt_identity()
+	return jsonify(logged_in_as = current_user), 200
 
 
 @auth_bp.route('/login/callback/', methods=["GET", "POST"])
@@ -99,44 +134,35 @@ def callback():
 
 
 
-@auth_bp.route('/register/', methods=['GET', 'POST'])
+@auth_bp.route('/register', methods=['POST'])
 def register():
 	"""
-	User register page.
-
-	GET requests serve sign-up page.
-	POST requests validate form and user creation.
+	User register.
 	"""
-	form = RegisterForm()
-	if form.validate_on_submit():
-		existing_user_mail = User.query.filter_by(email = form.email.data).first()
-		existing_user_pseudo = User.query.filter_by(pseudo = form.pseudo.data).first()
-		if (existing_user_mail is None and existing_user_pseudo is None):
-			user = User(
-				pseudo = form.pseudo.data,
-				email=form.email.data
-			)
-			user.set_password(form.password.data)
-			db.session.add(user)
-			db.session.commit()
-			login_user(user)
-			return redirect(url_for('main_bp.index'))
-		elif (existing_user_pseudo is not None):
-			flash('Un utilisateur possède déjà le même pseudo.')
-		elif (existing_user_mail is not None):
-			flash('Un utilisateur possède déjà la même adresse mail.')
-	return render_template(
-		'register.html', form=form)
 
-@login_manager.user_loader
-def load_user(user_id):
-	"""Check if the user is logged in on every page load."""
-	if user_id is not None:
-		return User.query.get(user_id)
-	return None
+	# Get Request objects
+	data = request.get_json()
+	email = data['email']
+	name = data['name']
+	password = data['password']
 
-@login_manager.unauthorized_handler
-def unauthorized():
-	"""Redirect unauthorized users to Login page."""
-	flash('You must be logged in to view that page.')
-	return redirect(url_for('auth_bp.login'))
+	if not email:
+		return jsonify({"error": ERROR_NO_EMAIL}), 200
+	if not password:
+		return jsonify({"error": ERROR_NO_PASSWORD}), 200
+	if not name:
+		return jsonify({"error": ERROR_NO_NAME}), 200
+
+	existing_user_mail = User.query.filter_by(email = email).first()
+	if (existing_user_mail):
+		return jsonify({"error": EMAIL_ALREADY_IN_USE}), 200
+
+	existing_user_name = User.query.filter_by(name = name).first()
+	if (existing_user_name):
+		return jsonify({"error": NAME_ALREADY_IN_USE}), 200
+
+	user = User.create(name=name, email=email, password=password)
+
+	access_token = create_access_token(identity = user.get_id())
+	response = jsonify({'access_token': access_token, 'user': user_schema.dump(user)})
+	return response, 200
