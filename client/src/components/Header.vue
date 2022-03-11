@@ -1,11 +1,3 @@
-<script setup>
-import LogoutDialog from '../components/LogoutDialog.vue';
-import { useLoggedInUserStore } from '../store/loggedInUser';
-import { useLogoutDialogStore } from '../store/dialogs';
-const loggedInUserStore = useLoggedInUserStore();
-const logoutDialogStore = useLogoutDialogStore();
-</script>
-
 <template>
     <main>
         <div class="bg-m-grey-500 text-white">
@@ -52,8 +44,16 @@ const logoutDialogStore = useLogoutDialogStore();
 
 <script>
 import router from '../router';
+import { useLoggedInUserStore } from '../store/loggedInUser';
+import { useLogoutDialogStore } from '../store/dialogs';
 
 export default {
+    setup() {
+        const loggedInUserStore = useLoggedInUserStore();
+        const logoutDialogStore = useLogoutDialogStore();
+
+        return {logoutDialogStore, loggedInUserStore}
+    },
     methods: {
         async logOut() {
             const [error] = await this.loggedInUserStore.logOut();

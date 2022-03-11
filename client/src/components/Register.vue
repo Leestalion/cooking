@@ -1,5 +1,4 @@
 <script setup>
-import ToastNotificationVue from '@/components/ToastNotification.vue';
 import { useLoggedInUserStore } from '@/store/loggedInUser';
 import { useToastNotifStore } from '@/store/toastNotif'
 

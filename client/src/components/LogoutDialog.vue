@@ -1,9 +1,3 @@
-<script setup>
-import { useLogoutDialogStore } from '../store/dialogs';
-import { mapState } from 'pinia';
-const logoutDialogStore = useLogoutDialogStore();
-</script>
-
 <template>
   <transition name="fade">
     <div class="bg-m-grey-500 bg-opacity-70 absolute top-0 left-0 w-full h-full backdrop-blur-sm flex justify-center items-center" v-if="showLogout">
@@ -28,7 +22,16 @@ const logoutDialogStore = useLogoutDialogStore();
 </template>
 
 <script>
+import { useLogoutDialogStore } from '../store/dialogs';
+import { mapState } from 'pinia';
+
+
 export default {
+    setup() {
+      const logoutDialogStore = useLogoutDialogStore();
+
+      return { logoutDialogStore };
+    },
     computed: {
         ...mapState(useLogoutDialogStore, {
             showLogout: 'logoutDialog',

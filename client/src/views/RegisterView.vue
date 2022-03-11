@@ -1,17 +1,13 @@
 <script setup>
-import HeaderVue from '../components/Header.vue';
-import router from '../router';
 import { useLoggedInUserStore } from '../store/loggedInUser';
-import RegisterVue from '../components/Register.vue';
-
 const loggedInUserStore = useLoggedInUserStore();
 </script>
 
 <template>
     <div>
-        <HeaderVue></HeaderVue>
+        <Header></Header>
         <div class="flex justify-center">
-            <RegisterVue></RegisterVue>
+            <Register></Register>
         </div>
     </div>
 </template>
@@ -19,7 +15,16 @@ const loggedInUserStore = useLoggedInUserStore();
 
 <script>
 
+import Register from '../components/Register.vue';
+import Header from '../components/Header.vue';
+import router from '../router';
+
+
 export default {
+    components: {
+        Register,
+        Header,
+    },
     created() {
         // if (this.loggedInUserStore.getIsLoggedIn) {
         //     this.goToHome();

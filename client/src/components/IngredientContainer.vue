@@ -20,6 +20,9 @@
 import AddIngredientDialog from "./AddIngredientDialog.vue";
 
 export default {
+    components: {
+        AddIngredientDialog,
+    },
     data() {
         return {
             ingredients: [],

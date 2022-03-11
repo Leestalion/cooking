@@ -70,12 +70,12 @@ import IngredientContainer from './IngredientContainer.vue';
 
 export default {
     components: {
-    Form,
-    Field,
-    ErrorMessage,
-    StarRating,
-    IngredientContainer
-},
+        Form,
+        Field,
+        ErrorMessage,
+        StarRating,
+        IngredientContainer
+    },
     data() {
         return {
             ingredientCount: 0,

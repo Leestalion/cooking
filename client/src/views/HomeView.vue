@@ -1,9 +1,17 @@
-<script setup>
-import HeaderVue from '../components/Header.vue';
-import AddRecipeButtonVue from '../components/AddRecipeButton.vue';
-</script>
-
 <template>
-  <HeaderVue></HeaderVue>
-  <AddRecipeButtonVue></AddRecipeButtonVue>
+  <Header></Header>
+  <AddRecipeButton></AddRecipeButton>
 </template>
+
+<script>
+import Header from '../components/Header.vue';
+import AddRecipeButton from '../components/AddRecipeButton.vue';
+
+export default {
+  components: {
+    Header,
+    AddRecipeButton,
+  }
+}
+
+</script>

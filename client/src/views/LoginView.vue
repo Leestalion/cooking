@@ -1,7 +1,4 @@
 <script setup>
-import HeaderVue from '../components/Header.vue';
-import LoginVue from '../components/Login.vue';
-import router from '../router';
 import { useLoggedInUserStore } from '../store/loggedInUser';
 
 const loggedInUserStore = useLoggedInUserStore();
@@ -9,15 +6,19 @@ const loggedInUserStore = useLoggedInUserStore();
 
 <template>
     <div>
-        <HeaderVue></HeaderVue>
+        <Header></Header>
         <div class="flex justify-center">
-            <LoginVue></LoginVue>
+            <Login></Login>
         </div>
     </div>
 </template>
 
 
 <script>
+
+import Header from '../components/Header.vue';
+import Login from '../components/Login.vue';
+import router from '../router';
 
 export default {
     created() {

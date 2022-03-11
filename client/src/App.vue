@@ -19,6 +19,11 @@ import LogoutDialog from './components/LogoutDialog.vue';
 
 export default {
 
+  components: {
+    ToastNotification,
+    LogoutDialog,
+  }
+
 }
 
 </script>
