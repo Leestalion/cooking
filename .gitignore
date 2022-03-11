@@ -144,6 +144,4 @@ cython_debug/
 
 # Node and npm (build is done only locally)
 node_modules
-postcss.config.js
-tailwind.config.js
 package-lock.json
