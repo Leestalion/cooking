@@ -19,8 +19,9 @@ const useIngredientStore = defineStore({
             try {
                 const { data } = await authService.post('/addingredient', ingredient);
                 if (data.ingredient) {
-                    this.ingredients.push(new Ingredient(data.ingredient))
-                    return [null, this.ingredients];
+                    var newIngredient = new Ingredient(data.ingredient.ingredient_id, data.ingredient.ingredient_name, data.ingredient.unity)
+                    this.ingredients.push(newIngredient)
+                    return [null, this.ingredients, newIngredient];
                 } else if (data.error) {
                     return [data.error];
                 }

@@ -312,14 +312,16 @@ export default {
         async AddNewIngredient() {
             var ingredient = new Ingredient(null, this.newIngredientName, this.newUnity, this.newQuantity, false, true);
 
-            const [error, ingredients] = await this.ingredientStore.addIngredient(ingredient);
+            const [error, ingredients, newReceivedIngredient] = await this.ingredientStore.addIngredient(ingredient);
 
             if (error) {
                 console.log(error);
             } else {
                 this.ingredientList = ingredients;
                 this.newIngredient = false;
-                this.selectIngredient(ingredient)
+                var newIngredientReceivedTmp = newReceivedIngredient;
+                newIngredientReceivedTmp.quantity = this.newQuantity;
+                this.selectIngredient(newIngredientReceivedTmp)
             }
         },
 

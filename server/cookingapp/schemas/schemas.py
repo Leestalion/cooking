@@ -20,7 +20,6 @@ class IngredientSchema(SQLAlchemySchema):
     ingredient_id = auto_field()
     ingredient_name = auto_field()
     unity = auto_field()
-    unity = auto_field()
 
 
 
