@@ -1,9 +1,3 @@
-<script setup>
-import { useLoggedInUserStore } from '../store/loggedInUser';
-
-const loggedInUserStore = useLoggedInUserStore();
-</script>
-
 <template>
     <div>
         <Header></Header>
@@ -21,10 +15,9 @@ import Login from '../components/Login.vue';
 import router from '../router';
 
 export default {
-    created() {
-        // if (this.loggedInUserStore.getIsLoggedIn) {
-        //     this.goToHome();
-        // }
+    components: {
+        Login,
+        Header,
     },
     methods: {
         goToHome() {
