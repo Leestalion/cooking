@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { authService, baseService } from "../services/auth.service";
 import { useLocalStorage  } from '@vueuse/core';
-import router from "../router";
 
 
 const ERROR_NO_EMAIL = 400;

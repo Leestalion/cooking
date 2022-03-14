@@ -1,9 +1,9 @@
 from os import path
 from flask import Blueprint, flash, current_app as app, jsonify
-from flask import render_template, url_for, redirect
-from flask_cors import cross_origin
+from flask import render_template, url_for, redirect, request
 from flask_login import current_user, login_required, logout_user
 from flask_jwt_extended import jwt_required
+import jwt
 
 from cookingapp.utils.helpers import upload_file_to_s3
 from ..utils.forms import RecipeForm, IngredientForm, StepForm, ModifyTitleForm, ModifyImageForm, ModifyStepForm, ModifyIngredientForm, TestForm
@@ -12,11 +12,16 @@ from ..models.recipe import Recipe
 from ..models.recipe_ingredient import RecipeIngredient
 from ..models.ingredient import Ingredient
 from ..models.step import Step
+from ..schemas.schemas import ingredient_schema, ingredients_schema
 from werkzeug.utils import secure_filename
 from .. import db
 
 
+
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ERROR_NO_INGREDIENT = 600
+ERROR_INGREDIENT_ALREADY_EXISTS = 601
+
 
 
 main_bp = Blueprint(
@@ -206,6 +211,31 @@ def test():
 		"test.html",
 		form = form
 	)
+
+@main_bp.route('/addingredient', methods=["POST"])
+@jwt_required()
+def addIngredient():
+
+	data = request.get_json()
+	ingredient_name = data['ingredient_name']
+	unity = data['unity']
+	
+	
+	if not ingredient_name:
+		return jsonify({"error": ERROR_NO_INGREDIENT}), 200
+	
+	existing_ingredient = Ingredient.query.filter_by(ingredient_name = ingredient_name).first()
+	if existing_ingredient:
+		return jsonify({"error": ERROR_INGREDIENT_ALREADY_EXISTS}), 200
+
+	ingredient = Ingredient.create(ingredient_name=ingredient_name, unity = unity)
+	
+	return jsonify({'ingredient': ingredient_schema.dump(ingredient)}), 200
+
+@main_bp.route('/ingredients', methods=['GET'])
+@jwt_required()
+def getIngredients():
+	return jsonify({'ingredients': ingredients_schema.dump(Ingredient.query.all())}), 200
 
 
 def allowed_file(filename):

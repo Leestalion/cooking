@@ -1,8 +1,11 @@
 <template>
   <transition name="fade">
-    <div class="bg-m-grey-500 bg-opacity-70 absolute top-0 left-0 w-full h-full backdrop-blur-sm flex justify-center items-center" v-if="showLogout">
+    <div
+      class="bg-m-grey-500 bg-opacity-70 fixed top-0 left-0 w-full h-full backdrop-blur-sm flex justify-center items-center"
+      v-if="showLogout"
+    >
       <div
-        class="bg-m-grey-500 text-white rounded-md transition-all w-2/3 md:w-1/2 "
+        class="bg-m-grey-500 text-white rounded-md transition-all w-2/3 md:w-1/2"
         id="logoutModal"
         tabindex="-1"
       >
@@ -23,34 +26,42 @@
 
 <script>
 import { useLogoutDialogStore } from '../store/dialogs';
+import { useLoggedInUserStore } from '../store/loggedInUser';
 import { mapState } from 'pinia';
-
+import router from '../router';
 
 export default {
-    setup() {
-      const logoutDialogStore = useLogoutDialogStore();
+  setup() {
+    const logoutDialogStore = useLogoutDialogStore();
+    const loggedInUserStore = useLoggedInUserStore();
 
-      return { logoutDialogStore };
-    },
-    computed: {
-        ...mapState(useLogoutDialogStore, {
-            showLogout: 'logoutDialog',
-        })
+    return { logoutDialogStore, loggedInUserStore };
+  },
+  computed: {
+    ...mapState(useLogoutDialogStore, {
+      showLogout: 'logoutDialog',
+    })
 
+  },
+  methods: {
+    closeLogout() {
+      this.logoutDialogStore.closeLogout();
     },
-    methods: {
-      closeLogout() {
+
+    async logOut() {
+      const [error, data] = await this.loggedInUserStore.logOut();
+
+      if (error) {
+        this.error_message = error;
+      } else {
         this.logoutDialogStore.closeLogout();
+        this.goToLogin();
       }
+    },
+
+    goToLogin() {
+      router.push({name: 'login'});
     }
+  },
 }
 </script>
-
-<style>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
-}
-</style>

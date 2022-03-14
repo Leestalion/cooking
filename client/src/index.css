@@ -19,9 +19,11 @@
                 hover:bg-m-orange-600 hover:shadow-lg hover:border-m-orange-600
                 focus:bg-m-orange-600 focus:shadow-lg focus:outline-none focus:ring-0 focus:border-m-orange-600
                 active:bg-m-orange-700 active:shadow-lg active:border-m-orange-700
-                transition
-                duration-150
+                transition-colors
+                duration-200
                 ease-in-out
+                disabled:hover:bg-m-orange-200 disabled:hover:shadow-md disabled:hover:border-m-orange-200
+                disabled:bg-m-orange-200 disabled:border-m-orange-200
     }
 
     .btn-secondary {
@@ -40,5 +42,56 @@
 				transition
 				duration-150
 				ease-in-out
+                disabled:hover:shadow-md disabled:hover:border-m-orange-200 disabled:hover:bg-white disabled:hover:text-m-orange-200
+                disabled:border-m-orange-200 disabled:text-m-orange-200
     }
+}
+
+
+@layer utilities {
+    .scrollbar-gutter {
+        scrollbar-gutter: stable both-edges;
+    }
+
+    .transition-dimension {
+        transition-property: width;
+        transition-property: height;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+    }
+
+    .transition-height {
+        transition-property: height;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+    }
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background-opacity: 0;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1c1c1a;
+    border-radius: 4px;
+}
+
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: all 0.5s ease;
+}
+.fade-enter,
+.fade-leave-to,
+.fade-enter-from {
+    opacity: 0;
+    transform: translateY(-500px);
 }

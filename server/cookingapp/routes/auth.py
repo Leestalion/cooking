@@ -1,15 +1,10 @@
 """Routes for user authentification."""
-from os import access
-import re
-from venv import create
-from flask import Blueprint, jsonify, render_template, redirect, flash, url_for, request, current_app as app
-from flask_cors import cross_origin
-from flask_login import current_user, login_user
+from flask import Blueprint, jsonify, redirect, url_for, request, current_app as app
+from flask_login import login_user
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 from ..schemas.schemas import user_schema
 from cookingapp.utils.helpers import get_google_provider_cfg
-from ..utils.forms import RegisterForm
 from ..utils.helpers import client
 from .. import db
 from ..models.user import User
