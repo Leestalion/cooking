@@ -1,11 +1,3 @@
-<script setup>
-import { useLoggedInUserStore } from '@/store/loggedInUser';
-import { useToastNotifStore } from '@/store/toastNotif'
-
-const loggedInUserStore = useLoggedInUserStore();
-const toastNotifStore = useToastNotifStore();
-</script>
-
 <template>
     <div class="mt-10 text-white text-center border-2 w-1/2 px-20 py-10 shadow-2xl rounded-lg bg-m-grey-500 flex flex-col">
 
@@ -92,12 +84,21 @@ const toastNotifStore = useToastNotifStore();
     </div>
 </template>
 
+
 <script>
+import { useLoggedInUserStore } from '@/store/loggedInUser';
+import { useToastNotifStore } from '@/store/toastNotif'
 import * as yup from "yup";
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import router from '../router';
 
 export default {
+    setup() {
+        const loggedInUserStore = useLoggedInUserStore();
+        const toastNotifStore = useToastNotifStore();
+
+        return {toastNotifStore, loggedInUserStore};
+    },
 
     components: {
         Form,
