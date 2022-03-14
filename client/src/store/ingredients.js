@@ -50,7 +50,6 @@ const useIngredientStore = defineStore({
             } else {
                 this.ingredientsSelected = new Ingredients(ingredients);
             }
-            console.log(this.ingredientsSelected[0]);
 
         },
 

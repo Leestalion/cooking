@@ -272,7 +272,7 @@ export default {
     methods: {
         ingredientClicked(ingredient) {
 
-            if (this.chosenIngredient || ingredient.selected) {
+            if (this.chosenIngredient) {
                 this.chosenIngredient.clicked = false;
             }
             ingredient.clicked = true;
