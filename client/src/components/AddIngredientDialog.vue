@@ -36,6 +36,7 @@
                         <input
                             type="number"
                             placeholder="Quantité"
+                            v-model="newQuantity"
                             class="border-2 mt-2 pl-2 w-full md:w-1/2 rounded border-m-orange-500 self-center focus:border-m-orange-600 focus:outline-none"
                         />
 
@@ -185,7 +186,7 @@
 <script>
 
 import { useIngredientStore } from '../store/ingredients';
-import { Ingredients } from '../models/ingredients';
+import { Ingredient, Ingredients } from '../models/ingredients';
 
 export default {
     props: [
@@ -206,6 +207,7 @@ export default {
             newIngredient: false,
             newIngredientName: '',
             newUnity: 0,
+            newQuantity: null,
             ingredientList: new Ingredients(),
             search: '',
             unity: [],
@@ -308,10 +310,7 @@ export default {
         },
 
         async AddNewIngredient() {
-            var ingredient = {
-                'ingredient_name': this.newIngredientName,
-                'unity': this.newUnity
-            };
+            var ingredient = new Ingredient(null, this.newIngredientName, this.newUnity, this.newQuantity, false, true);
 
             const [error, ingredients] = await this.ingredientStore.addIngredient(ingredient);
 
@@ -320,28 +319,21 @@ export default {
             } else {
                 this.ingredientList = ingredients;
                 this.newIngredient = false;
-
                 this.selectIngredient(ingredient)
             }
         },
 
         selectIngredient(ingredient) {
+            if (ingredient.quantity) {
+                ingredient.selected = true;
 
-            if (ingredient == this.chosenIngredient) {
+                this.ingredientList.forEach(ingredient => {
+                    ingredient.clicked = false;
+                });
 
-                if (ingredient.quantity) {
-                    ingredient.selected = true;
-
-                    this.ingredientList.forEach(ingredient => {
-                        ingredient.clicked = false;
-                    });
-
-                    this.ingredientList.mSort();
-                } else {
-                    console.log("veuillez fournir une quantité");
-                }
+                this.ingredientList.mSort();
             } else {
-                console.log("les ingrédients ne correspondent pas");
+                console.log("veuillez fournir une quantité");
             }
         },
 

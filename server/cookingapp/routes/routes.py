@@ -217,9 +217,8 @@ def test():
 def addIngredient():
 
 	data = request.get_json()
-	ingredient_name = data['ingredient_name']
+	ingredient_name = data['name']
 	unity = data['unity']
-	
 	
 	if not ingredient_name:
 		return jsonify({"error": ERROR_NO_INGREDIENT}), 200
