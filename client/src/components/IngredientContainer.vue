@@ -1,18 +1,29 @@
 <template>
-    <div class="m-3 rounded bg-m-grey-300 grid grid-cols-3">
+    <div class="m-3 rounded bg-m-grey-300 flex flex-wrap flex-row gap-3 justify-center py-4">
         <div
             v-for="ingredient in ingredients"
-            class="w-16 h-16 bg-m-grey-100 m-3 rounded cursor-pointer text-m-orange-500 hover:scale-105 transition-all duration-100"
+            class="text-m-orange-500 bg-m-grey-100 flex flex-col items-center justify-center rounded shadow-md p-2 relative cursor-pointer w-48 h-14 transition-transform"
         >
             <p>{{ ingredient.name }}</p>
             <span class=" flex">
                 <p>{{ ingredient.quantity }}</p>
                 <p v-if="unity[ingredient.unity]" class="ml-1">{{ unity[ingredient.unity].text }}</p> <!-- very weird comportement of javascript, telling undefined when var is defined -->
             </span>
+
+            <div
+                class="pointer-events-none absolute top-1 left-0 flex items-center px-2"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-m-orange-700 text-m-orange-500" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                    <g stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </g>
+                </svg>
+
+            </div>
         </div>
 
         <div
-            class="w-16 h-16 bg-m-grey-100 m-3 rounded cursor-pointer text-m-orange-500 active:scale-90 hover:scale-105 transition-all duration-100"
+            class=" w-48 h-14 bg-m-grey-100 rounded cursor-pointer text-m-orange-500 active:scale-90 hover:scale-105 transition-all duration-100 flex items-center justify-center"
             @click="addIngredient"
         >
             <svg
@@ -30,6 +41,7 @@
                 />
             </svg>
         </div>
+
     </div>
 
     <AddIngredientDialog
