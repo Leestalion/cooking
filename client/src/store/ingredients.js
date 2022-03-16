@@ -45,16 +45,18 @@ const useIngredientStore = defineStore({
         },
 
         setSelectedIngredients(ingredients) {
-            if (ingredients instanceof Ingredients) {
-                this.ingredientsSelected = ingredients;
-            } else {
-                this.ingredientsSelected = new Ingredients(ingredients);
-            }
+            this.ingredientsSelected = ingredients;
 
         },
 
         removeIngredientsFromSelected(ingredient) {
-            this.ingredientsSelected.pop(this.ingredientsSelected.mIndexOf(ingredient));
+            if (this.ingredientsSelected instanceof Ingredients) {
+                this.ingredientsSelected = this.ingredientsSelected.removeIngredient(ingredient);
+                
+            } else {
+                this.ingredientsSelected = new Ingredients(this.ingredientsSelected);
+                this.ingredientsSelected = this.ingredientsSelected.removeIngredient(ingredient);
+            }
         }
     }
 })

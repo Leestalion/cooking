@@ -87,6 +87,19 @@ class Ingredients extends Array {
         return found;
     }
 
+    containsIngredientIndex(ingredient) {
+        var found = false;
+        var mIndex = -1;
+        this.forEach((mIngredient, index) => {
+            if (mIngredient.id === ingredient.id) {
+                found = true;
+                mIndex = index;
+                return;
+            }
+        });
+        return [found, mIndex];
+    }
+
     getIngredientFromId(id) {
         var found = false;
         this.forEach((mIngredient) => {
@@ -96,6 +109,27 @@ class Ingredients extends Array {
             }
         });
         return found;
+    }
+
+    mSplice(index, count) {
+        console.log(this);
+        return this.splice(index, count);
+    }
+
+    removeIngredient(mIngredient) {
+        var tmp = new Ingredients();
+        var index = 0
+        if (this.containsIngredient(mIngredient)) {
+            this.forEach((ingredient) => {
+                if (ingredient.id != mIngredient.id) {
+                    tmp[index] = ingredient;
+                    index ++;
+                }
+            });
+        }
+        
+        return tmp;
+
     }
 
     static get unity() {

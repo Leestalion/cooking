@@ -10,7 +10,7 @@
 
 <script>
 
-import Header from '../components/Header.vue';
+import Header from '../components/Header.vue'; 
 import Login from '../components/Login.vue';
 import router from '../router';
 

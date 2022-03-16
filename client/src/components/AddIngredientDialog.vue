@@ -14,12 +14,12 @@
                         placeholder="Rechercher un ingrédient..."
                         v-model="search"
                         v-on:keydown.enter.prevent
-                        class="pl-2 rounded-l w-3/4 h-full outline-none bg-m-grey-100 focus:bg-white focus:border-2 focus:border-m-orange-500"
+                        class="transition-all pl-2 rounded-l w-3/4 h-full outline-none bg-m-grey-100 focus:bg-white focus:border-2 focus:border-m-orange-500"
                     />
                     <button
                         :disabled="newIngredientAvailable"
                         @click.prevent="newIngredientClicked"
-                        class="btn-primary w-1/4 h-full p-0 rounded-l-none"
+                        class="btn-primary w-1/4 h-full p-0 rounded-l-none transition-all duration-300"
                     >Nouveau</button>
                 </span>
 
@@ -349,8 +349,17 @@ export default {
             ingredient.selected = false;
             ingredient.quantity = null;
             ingredient.unity = 0;
-            // this.ingredientStore.removeIngredientsFromSelected(ingredient);
             this.ingredientList.mSort();
+        },
+
+        deleteIngredientById(id) {
+            var ingredient = this.ingredientList.getIngredientFromId(id);
+            if (ingredient) {
+                ingredient.selected = false;
+                ingredient.quantity = null;
+                ingredient.unity = 0;
+                this.ingredientList.mSort();
+            }
         },
 
         filterSelectedIngredients(ingredients) {
