@@ -1,1 +1,1 @@
-web: gunicorn wsgi:app
+web: cd server && export FLASK_APP=cookingapp && gunicorn dispatcher:app --log-file -

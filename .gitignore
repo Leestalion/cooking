@@ -16,7 +16,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -142,3 +141,7 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Node and npm (build is done only locally)
+node_modules
+package-lock.json

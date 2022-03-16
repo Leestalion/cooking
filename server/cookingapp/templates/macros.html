@@ -1,0 +1,86 @@
+{# Render ingredient form.
+
+This macro is intended to render both regular ingredient subforms (received from the
+server) and the template form used to dynamically add more forms.
+
+Arguments:
+    - subform: Form object to render
+    - index: Index of the form. For proper subforms rendered in the form loop,
+             this should match `loop.index0`, and for the template it should be
+             '_'
+#}
+{%- macro render_ingredient_form(subform, index) %}
+    <div id="ingredient-{{ index }}-form" class="{% if index != '_' %}subform_ing{% else %}is-hidden{% endif %} col s10 m5" data-index="{{ index }}">
+        <div class="col s7">
+            {{ subform.ing_name.label(class="block text-tblack-400 text-md font-bold mb-3") }}
+            {{ subform.ing_name(class="bg-tblack-50 rounded py-2 px-3 text-tblack-400 leading-tight
+            border border-tblack-50 focus:outline-none focus:bg-white focus:border-tblack-500") }}
+        </div>
+        <div class="col s2">
+            {{ subform.quantity.label(class="block text-tblack-400 text-md font-bold mb-3") }}
+            {{ subform.quantity(type = "number", class="bg-tblack-50 rounded py-2 px-3 text-tblack-400 leading-tight
+            border border-tblack-50 focus:outline-none focus:bg-white focus:border-tblack-500")}}
+        </div>
+        <div class="col s3">
+            {{ subform.unity.label(class="block text-tblack-400 text-md font-bold mb-3") }}
+            {{ subform.unity }}
+        </div>
+
+        <div class="btn removeIngredient">
+            remove
+        </div>
+        <hr/>
+    </div>
+{%- endmacro %}
+
+
+{# Render step form.
+
+This macro is intended to render both regular step subforms (received from the
+server) and the template form used to dynamically add more forms.
+
+Arguments:
+    - subform: Form object to render
+    - index: Index of the form. For proper subforms rendered in the form loop,
+             this should match `loop.index0`, and for the template it should be
+             '_'
+#}
+{%- macro render_step_form(subform, index) %}
+    <div id="step-{{ index }}-form" class="{% if index != '_' %}subform_step{% else %}is-hidden{% endif %} row" data-index="{{ index }}">
+        <div class="col s12">
+            {{ subform.step_text.label }}
+            {{ subform.step_text(class="materialize-textarea") }}
+        </div>
+        <a class="btn removeStep">
+            remove
+        </a>
+        <hr/>
+    </div>
+{%- endmacro %}
+
+
+{%- macro render_time(time_) %}
+    {% set time_display = time_.split(':') %}
+    {% if time_display[0] == '00' and time_display[1] == '01' %}
+        {{ time_display[1] }} minute
+    {% elif time_display[0] == '00' %}
+        {{ time_display[1] }} minutes
+    {% elif time_display[0][0] == '0' and time_display[0][1] == '1' %}
+        {{ time_display[0][1] }} heure {{ time_display[1] }} minutes
+    {% else %}
+        {{ time_display[0][1] }} heures {{ time_display[1] }} minutes
+    {% endif %}
+{%- endmacro %}
+
+
+{%- macro render_ingredient(ingredient, recipe, loop) %}
+    {% if ingredient.unity == 0 %}
+        <p class="col s8">{{ingredient.quantity}} {{ ingredient.ing_name }}</p><a class="btn col s4" href="{{ url_for('main_bp.modify', id=recipe.id, element='ingredients-'~loop.index0) }}">modifier</a>
+    {% elif ingredient.unity == 1 %}
+        <p>{{ ingredient.ing_name }} : {{ ingredient.quantity }} g</p><a class="btn" href="{{ url_for('main_bp.modify', id=recipe.id, element='ingredients-'~loop.index0) }}">modifier</a>
+    {% elif ingredient.unity == 2 %}
+        <p>{{ ingredient.ing_name }} : {{ ingredient.quantity }} mL</p><a class="btn" href="{{ url_for('main_bp.modify', id=recipe.id, element='ingredients-'~loop.index0) }}">modifier</a>
+    {% elif ingredient.unity == 3 %}
+        <p>{{ ingredient.ing_name }} : {{ ingredient.quantity }} cL</p><a class="btn" href="{{ url_for('main_bp.modify', id=recipe.id, element='ingredients-'~loop.index0) }}">modifier</a>
+    {% endif %}
+{%- endmacro %}

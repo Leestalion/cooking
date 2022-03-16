@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% import "macros.html" as macros %}
+
+{% block content %}
+<div class="flex justify-center h-32 items-center">
+	<h1 class="text-7xl font-title-secondary text-torange-500">Nouvelle Recette</h1>
+</div>
+
+<div class="border-2 w-1/2 ml-[25%] px-20 py-10 shadow-2xl rounded-lg">
+	<div>
+		<form method="POST" action="{{ url_for('main_bp.addrecipe') }}" enctype="multipart/form-data" name="recipeform">
+			{{ form.hidden_tag() }}
+			<div class="mb-5">
+				{{ form.name.label(class="block text-tblack-400 text-md font-bold mb-3") }}
+				{{ form.name(class="bg-tblack-50 rounded py-2 px-3 text-tblack-400 leading-tight
+				border border-tblack-50 focus:outline-none focus:bg-white focus:border-tblack-500") }}
+				{% if form.name.errors %}
+				{% for error in form.name.errors %}
+					<span class="helper-text">{{ error }}</span>
+				{% endfor %}
+				{% endif %}
+			</div>
+
+			<div class="mb-5">
+				{{ form.difficulty.label(class="
+					text-tblack-400 text-md font-bold leading-tight
+					mb-3 after:before:box-border
+					bg-white
+					m-0
+					appearance-none
+					grid grid-flow-col gap-2") }}
+				{% for subfield in form.difficulty %}
+					<input type="radio" id="{{ subfield.id }}" name="{{ form.difficulty.id }}" value="{{ subfield.id[-1] }}" class="hidden">
+					<label class="group cursor-pointer flex items-center" for="{{subfield.id}}">
+						<span class="group-hover:scale-110
+						shadow-inner-white
+						duration-200
+						w-4 h-4 inline-block mr-2 
+						rounded-full 
+						border border-tblack-500 flex-shrink-0" id="{{ subfield.id }}-checkbox">
+						</span>
+						{{ subfield.label.text }}
+					</label>
+				{% endfor %}
+				{% if form.difficulty.errors %}
+				{% for error in form.difficulty.errors %}
+					<span>{{ error }}</span>
+				{% endfor %}
+				{% endif %}
+			</div>
+
+
+			<div class="mb-5">
+				<span>{{ form.time_.label(class="block text-tblack-400 text-md font-bold mb-3") }}</span>
+				{{ form.time_(type="time") }}
+				{% if form.time_.errors %}
+				{% for error in form.time_.errors %}
+					<span>{{ error }}</span>
+				{% endfor %}
+				{% endif %}
+			</div>
+
+			<div class="w-full border mb-5"></div>
+
+			<h1 class=" text-xl font-bold text-torange-500 mb-3"> Ingrédients </h1>
+
+			{# Show all ingredient subforms #}
+			<div id="ingredient_subforms_container" class="row">
+				{% for subform_ing in form.ingredients %}
+					{{ macros.render_ingredient_form(subform_ing, loop.index0) }}
+				{% endfor %}
+				<div class="btn-floating btn-large col s2 m1" id="addIngredient">
+					<i class="large material-icons">add</i>
+				</div>
+			</div>
+			
+			<div class="w-full border mb-5"></div>
+			
+			<div class="row btn" id="addStep">
+				ajouter une étape
+			</div>
+
+
+			{# Show all step subforms #}
+			<div id="step_subforms_container">
+				{% for subform_step in form.steps %}
+					{{ macros.render_step_form(subform_step, loop.index0) }}
+
+				{% endfor %}
+			</div>
+
+			<div class="file-field input-field">
+				<div class="btn">
+					<span>File</span>
+					{{ form.photo }}
+				</div>
+				<div class="file-path-wrapper">
+					<input class="file-path validate" type="text">
+				</div>
+			</div>
+
+			<div class="row">
+				{% with messages = get_flashed_messages() %}
+					{% if messages %}
+					<ul class=flashes>
+						{% for message in messages %}
+							<li>{{ message }}</li>
+						{% endfor %}
+					</ul>
+					{% endif %}
+				{% endwith %}
+			</div>
+
+			<div class="input-field">
+				{{ form.submit(class='btn') }}
+			</div>
+		</form>
+	</div>
+
+	{# Form template #}
+    {{ macros.render_ingredient_form(template1, '_') }}
+    {{ macros.render_step_form(template2, '_') }}
+</div>
+{% endblock %}
