@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify-center my-5">
-        <button class="btn-primary text-2xl" @click="goToAddRecipe">Add Recipe</button>
+        <button class="btn-primary text-2xl" @click="goToAddRecipe">Ajouter une recette</button>
     </div>
 </template>
 
