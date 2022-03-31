@@ -10,6 +10,30 @@ class Step(db.Model):
 
 	step_text = db.Column(db.Text())
 
+
+	def __init__(self, recipe_id, step_text) -> None:
+		super().__init__()
+		self.recipe_id = recipe_id
+		self.step_text = step_text
+
+	
+	@staticmethod
+	def create(recipe_id, step_text):
+		step = Step(
+			recipe_id = recipe_id,
+			step_text = step_text,
+		)
+		db.session.add(step)
+		db.session.commit()
+		return step
+
+	@staticmethod
+	def deleteByRecipeId(recipe_id):
+		for step in Step.query.filter_by(recipe_id=recipe_id).all():
+			db.session.delete(step)
+		
+		db.session.commit()
+
 	# Relationship
 	recipe = db.relationship(
 		'Recipe',

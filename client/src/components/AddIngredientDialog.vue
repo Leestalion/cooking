@@ -340,7 +340,6 @@ export default {
         },
 
         confirmButtonClicked() {
-
             this.ingredientStore.setSelectedIngredients(this.filterSelectedIngredients(this.ingredientList));
             this.$emit('confirm');
         },
@@ -370,7 +369,7 @@ export default {
 
         setSelectedParameter(ingredients) {
 
-            var selectedIngredients = this.ingredientStore.getSelectedIngredients
+            var selectedIngredients = this.ingredientStore.getSelectedIngredients;
 
             ingredients.forEach((ingredient) => {
                 
@@ -386,6 +385,17 @@ export default {
             })
             return ingredients;
         },
+
+        refreshIngredients() {
+
+            this.ingredientList.forEach((ingredient) => {
+
+                if (ingredient.selected) {
+                    ingredient.selected = false;
+                    ingredient.quantity = null;
+                }
+            });
+        }
     }
 }
 

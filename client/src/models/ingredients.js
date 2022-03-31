@@ -30,9 +30,15 @@ class Ingredients extends Array {
                     this[index] = new Ingredient(element.ingredient_id, element.ingredient_name, element.unity);
                 });
             } else {
-                ingredientList.forEach((element, index) => {
-                    this[index] = new Ingredient(element.id, element.name, element.unity, element.quantity, element.clicked, element.selected);
-                });
+                if (!(ingredientList instanceof Ingredients) && ingredientList instanceof Array) {
+                    ingredientList.forEach((element, index) => {
+                        this[index] = new Ingredient(element.id, element.name, element.unity, element.quantity, element.clicked, element.selected);
+                    });
+                } else if (!(ingredientList instanceof Ingredients)) {
+                    console.log("wrong type given to new Ingredient(), received : ");
+                    console.log(ingredientList);
+                    return;
+                }
             }
 
 
@@ -112,7 +118,6 @@ class Ingredients extends Array {
     }
 
     mSplice(index, count) {
-        console.log(this);
         return this.splice(index, count);
     }
 

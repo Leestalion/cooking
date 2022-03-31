@@ -32,6 +32,10 @@ export default {
         }
     },
 
+    created() {
+        this.onStarClicked(0);
+    },
+
     methods: {
         onStarClicked(num) {
             this.stars.forEach(star => {
@@ -43,6 +47,10 @@ export default {
             });
             this.$emit('onRatingChange', num);
         },
+
+        reset() {
+            this.onStarClicked(0);
+        }
     }
 
 

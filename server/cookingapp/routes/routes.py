@@ -2,7 +2,7 @@ from os import path
 from flask import Blueprint, flash, current_app as app, jsonify
 from flask import render_template, url_for, redirect, request
 from flask_login import current_user, login_required, logout_user
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import jwt
 
 from cookingapp.utils.helpers import upload_file_to_s3
@@ -12,15 +12,18 @@ from ..models.recipe import Recipe
 from ..models.recipe_ingredient import RecipeIngredient
 from ..models.ingredient import Ingredient
 from ..models.step import Step
-from ..schemas.schemas import ingredient_schema, ingredients_schema
+from ..schemas.schemas import ingredient_schema, ingredients_schema, recipe_schema, recipes_schema
 from werkzeug.utils import secure_filename
 from .. import db
 
 
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+NOT_LOGGED_ERROR = 100
 ERROR_NO_INGREDIENT = 600
 ERROR_INGREDIENT_ALREADY_EXISTS = 601
+ERROR_NO_NAME = 602
+ERROR_RECIPE_ALREADY_EXIST = 603
 
 
 
@@ -39,148 +42,78 @@ def ping_pong():
 def google_site_verf():
     return render_template("google97a1864ac8cc98b6.html")
 
-@main_bp.route('/', methods = ['GET'])
-@main_bp.route('/index/', methods = ['GET'])
-def index():
-    return render_template(
-    	"index.html", 
-    	current_user=current_user,
-    	recipes = Recipe.query
-    )
 
-@main_bp.route("/logout-old")
-@jwt_required
-def logout():
-	logout_user()
-	return redirect(url_for('main_bp.index'))
 
-@main_bp.route("/addrecipe/", methods=['GET', 'POST'])
-@login_required
+@main_bp.route("/addrecipe", methods=['POST'])
+@jwt_required()
 def addrecipe():
-	form = RecipeForm()
-	template_form_1 = IngredientForm(prefix='ingredients-_-')
-	template_form_2 = StepForm(prefix='steps-_-')
 
-	if form.validate_on_submit():
-		file = form.photo.data
-		if file:
-
-			existing_recipe_name = Recipe.query.filter_by(name = form.name.data).first()
-			if (existing_recipe_name is None):
-
-				filename = secure_filename(form.photo.data.filename)
-				form.photo.data.save(path.join(app.config["UPLOAD_FOLDER"], filename))
-
-				recipe = Recipe(
-					user_id = current_user.id,
-					name = form.name.data,
-					time = form.time_.data,
-					difficulty = form.difficulty.data,
-					photo = filename
-				)
-
-				db.session.add(recipe)
-
-				for ingredient in form.ingredients.data:
-					new_ingredient = RecipeIngredient(**ingredient)
-					# Add to recipe
-					recipe.ingredients.append(new_ingredient)
-
-				for step in form.steps.data:
-					new_step = Step(**step)
-					# Add to recipe
-					recipe.steps.append(new_step)
-
-				db.session.commit()
-				return redirect("/index/")
-
-			flash("ce nom de recette est déjà pris.")
-
-		flash("fichier introuvable")
-
-	return render_template(
-		"addrecipe.html", 
-		form=form, 
-		current_user=current_user,
-		template1 = template_form_1,
-		template2 = template_form_2
-	)
+	current_user = get_jwt_identity()
+	if not current_user:
+		return jsonify({"error": NOT_LOGGED_ERROR})
 
 
-@main_bp.route('/recipe/<id>', methods = ['GET'])
-def recipe(id):
-	recipe = Recipe.query.filter_by(id=id).first_or_404()
-	return render_template(
-		"recipe.html", 
-		current_user=current_user,
-		recipe = recipe
-	)
+	# Get Request objects
+	data = request.get_json()
+	name = data['name']
+	difficulty = data['difficulty']
+	time = data['time']
+	steps = data['steps']
+	ingredients = data['ingredients']
 
-@main_bp.route('/user/<user_id>', methods = ['GET'])
-def user(user_id):
-	user = User.query.filter_by(user_id=user_id).first_or_404()
-	recipes = Recipe.query.filter_by(user_id=user_id)
-	return render_template(
-		"user.html", 
-		current_user=current_user,
-		user = user,
-		recipes = recipes
-	)
+	if not name:
+		return jsonify({"error": ERROR_NO_NAME}), 200
 
-@main_bp.route('/recipe/<id>/modify/<element>', methods = ['GET', 'POST'])
-@login_required
-def modify(id, element):
-	recipe = Recipe.query.filter_by(id=id).first_or_404()
-	title_form = ModifyTitleForm()
-	image_form = ModifyImageForm()
-	step_form = ModifyStepForm()
-	ingredient_form = ModifyIngredientForm()
+	existing_recipe_name = Recipe.query.filter_by(name = name).first()
+	if (existing_recipe_name):
+		return jsonify({"error": ERROR_RECIPE_ALREADY_EXIST}), 200
 
-	if title_form.submit_title.data and title_form.validate():
-		if title_form.validate_on_submit():
-			recipe.name = title_form.name.data
-			db.session.commit()
-			return redirect("/recipe/"+id+"/modify/success")
+	recipe = Recipe.create(user_id = current_user, name=name, difficulty=difficulty, time=time)
 
-	if image_form.submit_image.data and image_form.validate():
-		if image_form.validate_on_submit():
-			filename = secure_filename(image_form.photo.data.filename)
-			image_form.photo.data.save(path.join(app.config["UPLOAD_FOLDER"], filename))
+	for ingredient in ingredients:
+		RecipeIngredient.create(recipe.recipe_id, ingredient["id"], ingredient["quantity"], ingredient["unity"])
+
+	for step in steps:
+		Step.create(recipe_id=recipe.recipe_id, step_text=step["text"])
+
+	response = jsonify({'recipe': recipe_schema.dump(recipe)})
+	return response, 200
 
 
-			recipe.photo = filename
-			db.session.commit()
-			return redirect("/recipe/"+id+"/modify/success")
 
-	if step_form.submit_step.data and step_form.validate():
-		if step_form.validate_on_submit():
-			#flash("on est là")
-			step = Step.query.get(element)
-			step.step_text = step_form.step_text.data
-			db.session.commit()
-			return redirect("/recipe/"+id+"/modify/success")
+@main_bp.route('/recipes', methods=["POST"])
+def getrecipes():
+	return jsonify({'recipes': recipes_schema.dump(Recipe.query.all())}), 200
 
-	if ingredient_form.submit_ingredient.data and ingredient_form.validate():
-		if ingredient_form.validate_on_submit():
-			flash("on est là")
-			ingredient = RecipeIngredient.query.get(element)
-			ingredient.ing_name = ingredient_form.ing_name.data
-			ingredient.quantity = ingredient_form.quantity.data
-			ingredient.unity = ingredient_form.unity.data
-			db.session.commit()
-			return redirect("/recipe/"+id+"/modify/success")
-			
 
-	return render_template(
-		"modify.html", 
-		current_user=current_user,
-		recipe = recipe,
-		element = element,
-		title_form = title_form,
-		image_form = image_form,
-		step_form = step_form,
-		ingredient_form = ingredient_form
-	)
+
+@main_bp.route('/current-user-recipes', methods=["POST"])
+@jwt_required()
+def getCurrentUserRecipes():
+
+	current_user = get_jwt_identity()
+	if not current_user:
+		return jsonify({"error": NOT_LOGGED_ERROR})
+
+	return jsonify({'recipes': recipes_schema.dump(Recipe.query.filter_by(user_id=current_user))})
+
+
+
+@main_bp.route('/delete-recipe', methods=["POST"])
+@jwt_required()
+def deleteRecipe():
+	data = request.get_json()
+	recipe_id = data['id']
+
+	if not recipe_id:
+		return jsonify({'error': "no recipe ID found"})
+
+	RecipeIngredient.deleteByRecipeId(recipe_id=recipe_id)
+	Step.deleteByRecipeId(recipe_id=recipe_id)
+
+	Recipe.deleteById(recipe_id=recipe_id)
+	return jsonify({'success': True})
+
 
 @main_bp.route('/test/', methods=["GET", "POST"])
 def test():
