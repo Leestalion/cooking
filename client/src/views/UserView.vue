@@ -1,19 +1,19 @@
 <template>
   <Header></Header>
   <AddRecipeButton></AddRecipeButton>
-  <Recipes></Recipes>
+  <User></User>
 </template>
 
 <script>
 import Header from '../components/Header.vue';
 import AddRecipeButton from '../components/AddRecipeButton.vue';
-import Recipes from '../components/Recipes.vue';
+import User from '../components/User.vue';
 
 export default {
   components: {
     Header,
     AddRecipeButton,
-    Recipes
+    User
 }
 }
 

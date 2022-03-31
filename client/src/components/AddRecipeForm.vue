@@ -5,6 +5,7 @@
             <Form class="flex flex-col items-center w-full" :validation-schema="schema" @submit="handleAddRecipe">
                 <span class="flex items-center">
                     <Field
+                        @keydown.enter.prevent
                         id="name"
                         placeholder="Nom de la recette"
                         v-model="recipe.name"
@@ -23,9 +24,10 @@
                     name="difficulty"
                     class="hidden"
                 />
-                <StarRating class="mb-4 pl-2" @onRatingChange="(n) => recipe.difficulty = n"></StarRating>
+                <StarRating class="mb-4 pl-2" ref="StarRatingComponent" @onRatingChange="(n) => recipe.difficulty = n"></StarRating>
                 <label class="mb-1" for="time">Temps</label>
                 <Field
+                    @keydown.enter.prevent
                     id="time"
                     v-model="recipe.time"
                     type="time"
@@ -37,7 +39,7 @@
                 <div class="border border-m-orange-500 w-3/4 mt-4"></div>
                 <h2 class="text-m-orange-500 text-2xl my-4 font-semibold">Ingrédients</h2>
 
-                <IngredientContainer></IngredientContainer>
+                <IngredientContainer ref="ingredientContainerComponent"></IngredientContainer>
 
                 <div class="border border-m-orange-500 w-3/4 mt-4"></div>
                 <h2 class="text-m-orange-500 text-2xl my-4 font-semibold">Etapes</h2>
@@ -57,12 +59,13 @@
                     </div>
                     <textarea
                         type="text"
+                        v-model="recipe.steps[index].text"
                         class="w-2/3 h-40 box-border mb-4 pl-2 rounded outline-none border-2 border-m-grey-100 bg-m-grey-100 focus:bg-white focus:border-m-orange-500 transition-all"
                     />
                 </div>
 
                 <div
-                    class=" w-1/4 h-8 mb-8 bg-m-orange-500 rounded cursor-pointer text-white active:scale-90 hover:scale-105 transition-all duration-100 flex items-center justify-center"
+                    class=" w-1/4 h-8 mb-8 bg-m-orange-500 rounded cursor-pointer text-white active:scale-90 hover:scale-110 transition-all duration-100 flex items-center justify-center"
                     @click="addStepField"
                 >
                     <svg
@@ -84,9 +87,17 @@
                 <div class="border border-m-orange-500 w-3/4 mb-4"></div>
 
                 <input
-                    type="submit"
-                    class="font-bold w-2/3 h-8 mb-8 bg-m-orange-500 rounded cursor-pointer text-white active:scale-90 hover:scale-105 transition-all duration-100 flex items-center justify-center"
+                    @click="reset"
+                    type="reset"
+                    class="font-bold w-2/3 h-8 mb-2 rounded cursor-pointer text-m-orange-500 border-m-orange-500 border-2 active:scale-95 hover:scale-105 transition-all duration-100 flex items-center justify-center"
                 >
+
+                <input
+                    @click.prevent="handleAddRecipe"
+                    type="submit"
+                    class="font-bold w-2/3 h-8 mb-8 bg-m-orange-500 rounded cursor-pointer text-white active:scale-95 hover:scale-105 transition-all duration-100 flex items-center justify-center"
+                >
+            
                 
             </Form>
         </div>
@@ -99,14 +110,19 @@ import { Form, Field, ErrorMessage } from 'vee-validate';
 import StarRating from './StarRating.vue';
 import IngredientContainer from './IngredientContainer.vue';
 import { useIngredientStore } from '../store/ingredients';
+import { useRecipeStore } from '../store/recipes';
 import { Ingredients } from '../models/ingredients';
 import * as yup from 'yup';
+import { useToastNotifStore } from '../store/toastNotif';
+import router from '../router';
 
 export default {
     setup() {
         const ingredientStore = useIngredientStore();
+        const recipeStore = useRecipeStore();
+        const toastNotifStore = useToastNotifStore();
 
-        return { ingredientStore };
+        return { ingredientStore, recipeStore, toastNotifStore };
     },
     components: {
         Form,
@@ -139,6 +155,10 @@ export default {
     },
 
     methods: {
+        goToHome() {
+            router.push({name: 'home'})
+        },
+
         addStepField() {
             this.recipe.steps.push({
                 id: this.counterSteps,
@@ -149,19 +169,33 @@ export default {
         },
 
         deleteStep(index) {
-            console.log(index);
             this.recipe.steps.splice(index, 1);
         },
 
-        handleAddRecipe() {
+        async handleAddRecipe() {
 
-            
-
-            this.recipe.name = this.recipe_name;
-            this.recipe.time = this.time;
-            this.recipe.ingredients = this.ingredientStore.getSelectedIngredients;
+            this.recipe.ingredients = this.ingredientStore.ingredientsSelected;
 
             console.log(this.recipe);
+
+            const [error, data] = await this.recipeStore.addRecipe(this.recipe);
+
+            if (error) {
+                console.log(error);
+            } else {
+                this.toastNotifStore.showSnack("La recette a bien été créée");
+                this.goToHome();
+            }
+        },
+
+        reset() {
+            this.ingredientStore.emptySelectedIngredients();
+
+            this.$refs.ingredientContainerComponent.emptyIngredients();
+            this.$refs.StarRatingComponent.reset();
+
+            this.recipe.steps = [];
+            this.addStepField();
         }
     },
 

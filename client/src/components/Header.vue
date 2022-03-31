@@ -14,11 +14,11 @@
                 >FAMILY RECIPES</h1>
             </div>
             <div class="flex justify-end mr-5">
-                <a href v-if="this.loggedInUserStore.getIsLoggedIn">
-                    <button
-                        class="text-white font-bold py-2 px-4 border-r border-b-4 border-m-grey-700 hover:border-m-grey-600 hover:bg-m-grey-400 rounded-tl-lg"
-                    >{{ this.loggedInUserStore.getUserName }}</button>
-                </a>
+                <button
+                    v-if="this.loggedInUserStore.getIsLoggedIn"
+                    @click="goToUser"
+                    class="text-white font-bold py-2 px-4 border-r border-b-4 border-m-grey-700 hover:border-m-grey-600 hover:bg-m-grey-400 rounded-tl-lg"
+                >{{ this.loggedInUserStore.getUserName }}</button>
                 <button
                     v-if="this.loggedInUserStore.getIsLoggedIn"
                     class="text-white font-bold py-2 px-4 border-b-4 border-m-grey-700 hover:bg-m-grey-400 hover:border-m-grey-600 rounded-tr-lg transition duration-150 ease-in-out"
@@ -73,6 +73,9 @@ export default {
         }, 
         goToRegister() {
             router.push({name: 'register'});
+        },
+        goToUser() {
+            router.push({name: 'user'});
         },
 
         showLogout() {

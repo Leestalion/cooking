@@ -38,6 +38,8 @@ const useIngredientStore = defineStore({
                     return [null, this.ingredients];
                 } else if (data.error) {
                     return [data.error]
+                } else {
+                    return ["unknown error"];
                 }
             } catch (error) {
                 return [error];
@@ -57,6 +59,10 @@ const useIngredientStore = defineStore({
                 this.ingredientsSelected = new Ingredients(this.ingredientsSelected);
                 this.ingredientsSelected = this.ingredientsSelected.removeIngredient(ingredient);
             }
+        },
+
+        emptySelectedIngredients() {
+            this.ingredientsSelected = new Ingredients();
         }
     }
 })

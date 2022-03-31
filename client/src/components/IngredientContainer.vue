@@ -74,7 +74,7 @@ export default {
     },
     async created() {
 
-        this.ingredients = this.ingredientStore.getSelectedIngredients;
+        this.ingredients = this.ingredientStore.ingredientsSelected;
 
         this.unity = Ingredients.unity;
 
@@ -91,15 +91,22 @@ export default {
         
         async refreshIngredients() {
 
-            this.ingredients = this.ingredientStore.getSelectedIngredients;
+            this.ingredients = this.ingredientStore.ingredientsSelected;
 
             this.hideIngredientPopup();
+        },
+
+        emptyIngredients() {
+            this.ingredients = this.ingredientStore.ingredientsSelected;
+
+            this.$refs.ingredientPopup.refreshIngredients();
         },
 
         deleteIngredient(ingredient) {
 
             this.ingredientStore.removeIngredientsFromSelected(ingredient);
-            this.ingredients = this.ingredientStore.getSelectedIngredients;
+
+            this.ingredients = this.ingredientStore.ingredientsSelected;
 
             this.$refs.ingredientPopup.deleteIngredientById(ingredient.id);
         }
