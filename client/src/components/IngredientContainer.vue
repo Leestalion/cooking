@@ -4,7 +4,7 @@
             v-for="ingredient in ingredients"
             class="text-m-orange-500 bg-m-grey-100 flex flex-col items-center justify-center rounded shadow-md p-2 relative w-48 h-14 transition-transform"
         >
-            <p class="font-semibold">{{ ingredient.name }}</p>
+            <p class="font-semibold">{{ ingredient.ingredient_name }}</p>
             <span class=" flex">
                 <p>{{ ingredient.quantity }}</p>
                 <p v-if="unity[ingredient.unity]" class="ml-1">{{ unity[ingredient.unity].text }}</p> <!-- very weird comportement of javascript, telling undefined when var is defined -->
@@ -53,7 +53,7 @@
 
 <script>
 import AddIngredientDialog from "./AddIngredientDialog.vue";
-import { Ingredients } from "../models/ingredients";
+import IngredientHelper from "../models/ingredients";
 import { useIngredientStore } from "../store/ingredients";
 
 export default {
@@ -67,7 +67,7 @@ export default {
     },
     data() {
         return {
-            ingredients: new Ingredients(),
+            ingredients: [],
             showAddIngredientPopup: false,
             unity: [],
         };
@@ -76,7 +76,7 @@ export default {
 
         this.ingredients = this.ingredientStore.ingredientsSelected;
 
-        this.unity = Ingredients.unity;
+        this.unity = IngredientHelper.unity;
 
     },
     methods: {
@@ -108,7 +108,7 @@ export default {
 
             this.ingredients = this.ingredientStore.ingredientsSelected;
 
-            this.$refs.ingredientPopup.deleteIngredientById(ingredient.id);
+            this.$refs.ingredientPopup.deleteIngredientById(ingredient.ingredient_id);
         }
     },
     components: { AddIngredientDialog }

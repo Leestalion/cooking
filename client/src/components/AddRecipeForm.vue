@@ -111,7 +111,6 @@ import StarRating from './StarRating.vue';
 import IngredientContainer from './IngredientContainer.vue';
 import { useIngredientStore } from '../store/ingredients';
 import { useRecipeStore } from '../store/recipes';
-import { Ingredients } from '../models/ingredients';
 import * as yup from 'yup';
 import { useToastNotifStore } from '../store/toastNotif';
 import router from '../router';
@@ -146,7 +145,7 @@ export default {
                 ingredients: [],
             },
             schema,
-            ingredients: new Ingredients(),
+            ingredients: [],
             counterSteps: 0,
         }
     },

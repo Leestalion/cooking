@@ -96,12 +96,12 @@
                         v-else
                         v-for="(ingredient, i) in filteredList"
                         @click="ingredientClicked(ingredient)"
-                        :ref="ingredient.name"
+                        :ref="ingredient.ingredient_name"
                         :class="[ingredient.clicked ? 'hover:scale-100 cursor-default w-10/12 h-40 transition-dimension ' :
                         'cursor-pointer hover:scale-105 w-48 h-14 transition-transform ',
                         'text-m-orange-500 bg-m-grey-100 flex flex-col items-center justify-center rounded shadow-md p-2 relative']"
                     >
-                        <p class="font-semibold text-center">{{ ingredient.name }}</p>
+                        <p class="font-semibold text-center">{{ ingredient.ingredient_name }}</p>
 
                         <span v-if="ingredient.selected && !ingredient.clicked" class="flex">
                             <p>{{ ingredient.quantity }}</p>
@@ -186,7 +186,7 @@
 <script>
 
 import { useIngredientStore } from '../store/ingredients';
-import { Ingredient, Ingredients } from '../models/ingredients';
+import IngredientHelper from '../models/ingredients';
 
 export default {
     props: [
@@ -208,7 +208,7 @@ export default {
             newIngredientName: '',
             newUnity: 0,
             newQuantity: null,
-            ingredientList: new Ingredients(),
+            ingredientList: [],
             search: '',
             unity: [],
         }
@@ -227,18 +227,18 @@ export default {
             this.ingredientList = this.ingredientStore.getIngredients;
         }
 
-        this.ingredientList.mSort();
+        this.ingredientList.sort(IngredientHelper.sortByName);
 
-        this.unity = Ingredients.unity;
+        this.unity = IngredientHelper.unity;
 
     },
 
     computed: {
         filteredList() {
             if (this.ingredientList != null) {
-                return this.ingredientList.mFilter((ingredient) => {
-                    if (ingredient.name) {
-                        return ingredient.name.toLowerCase().includes(this.search.toLowerCase());
+                return this.ingredientList.filter((ingredient) => {
+                    if (ingredient.ingredient_name) {
+                        return ingredient.ingredient_name.toLowerCase().includes(this.search.toLowerCase());
                     } else {
                         return false;
                     }
@@ -262,8 +262,8 @@ export default {
                 return true;
             }
 
-            for (const [index, ingredient] of this.ingredientList.mEntries()) {
-                present = present || ingredient.name === this.search;
+            for (const [index, ingredient] of this.ingredientList.entries()) {
+                present = present || ingredient.ingredient_name === this.search;
             }
             return present;
         },
@@ -279,7 +279,7 @@ export default {
             this.chosenIngredient = ingredient;
 
             var grid = this.$refs['grid'];
-            var [element] = this.$refs[this.chosenIngredient.name];
+            var [element] = this.$refs[this.chosenIngredient.ingredient_name];
 
             if (!ingredient.clicked) {
                 grid.scrollTop = element.offsetTop - grid.clientHeight;
@@ -310,7 +310,7 @@ export default {
         },
 
         async AddNewIngredient() {
-            var ingredient = new Ingredient(null, this.newIngredientName, this.newUnity, this.newQuantity, false, true);
+            var ingredient = IngredientHelper.createIngredient(null, this.newIngredientName, this.newUnity, this.newQuantity, false, true);
 
             const [error, ingredients, newReceivedIngredient] = await this.ingredientStore.addIngredient(ingredient);
 
@@ -333,7 +333,7 @@ export default {
                     ingredient.clicked = false;
                 });
 
-                this.ingredientList.mSort();
+                this.ingredientList.sort(IngredientHelper.sortByName);
             } else {
                 console.log("veuillez fournir une quantité");
             }
@@ -348,21 +348,21 @@ export default {
             ingredient.selected = false;
             ingredient.quantity = null;
             ingredient.unity = 0;
-            this.ingredientList.mSort();
+            this.ingredientList.sort(IngredientHelper.sortByName);
         },
 
         deleteIngredientById(id) {
-            var ingredient = this.ingredientList.getIngredientFromId(id);
+            var ingredient = IngredientHelper.getIngredientFromId(this.ingredientList, id);
             if (ingredient) {
                 ingredient.selected = false;
                 ingredient.quantity = null;
                 ingredient.unity = 0;
-                this.ingredientList.mSort();
+                this.ingredientList.sort(IngredientHelper.sortByName);
             }
         },
 
         filterSelectedIngredients(ingredients) {
-            return ingredients.mFilter((ingredient) => {
+            return ingredients.filter((ingredient) => {
                 return (ingredient.selected == true);
             });
         },
@@ -372,8 +372,8 @@ export default {
             var selectedIngredients = this.ingredientStore.getSelectedIngredients;
 
             ingredients.forEach((ingredient) => {
-                
-                var selectedIngredient = selectedIngredients.getIngredientFromId(ingredient.id)
+            
+                var selectedIngredient = IngredientHelper.getIngredientFromId(selectedIngredients, ingredient.ingredient_id);
 
                 if (selectedIngredient) {
                     
