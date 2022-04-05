@@ -1,25 +1,25 @@
 import { defineStore } from "pinia";
 import { authService } from "../services/auth.service";
-import { Ingredients, Ingredient } from '../models/ingredients';
 import { useLocalStorage  } from '@vueuse/core';
+import IngredientHelper from '../models/ingredients';
 
 
 const useIngredientStore = defineStore({
     id: 'ingredients',
     state: () => ({
-        ingredients: new Ingredients(),
-        ingredientsSelected: useLocalStorage("ingredientsSelected", new Ingredients())
+        ingredients: [],
+        ingredientsSelected: useLocalStorage("ingredientsSelected", [])
     }),
     getters: {
-        getIngredients: (state) => new Ingredients(state.ingredients),
-        getSelectedIngredients: (state) => new Ingredients(state.ingredientsSelected)
+        getIngredients: (state) => state.ingredients,
+        getSelectedIngredients: (state) => state.ingredientsSelected
     },
     actions: {
         async addIngredient(ingredient) {
             try {
                 const { data } = await authService.post('/addingredient', ingredient);
                 if (data.ingredient) {
-                    var newIngredient = new Ingredient(data.ingredient.ingredient_id, data.ingredient.ingredient_name, data.ingredient.unity)
+                    var newIngredient = IngredientHelper.createIngredient(data.ingredient.ingredient_id, data.ingredient.ingredient_name, data.ingredient.unity);
                     this.ingredients.push(newIngredient)
                     return [null, this.ingredients, newIngredient];
                 } else if (data.error) {
@@ -34,7 +34,7 @@ const useIngredientStore = defineStore({
             try {
                 const { data } = await authService.get('/ingredients');
                 if (data.ingredients) {
-                    this.ingredients = new Ingredients(data.ingredients, true);
+                    this.ingredients = data.ingredients;
                     return [null, this.ingredients];
                 } else if (data.error) {
                     return [data.error]
@@ -52,17 +52,11 @@ const useIngredientStore = defineStore({
         },
 
         removeIngredientsFromSelected(ingredient) {
-            if (this.ingredientsSelected instanceof Ingredients) {
-                this.ingredientsSelected = this.ingredientsSelected.removeIngredient(ingredient);
-                
-            } else {
-                this.ingredientsSelected = new Ingredients(this.ingredientsSelected);
-                this.ingredientsSelected = this.ingredientsSelected.removeIngredient(ingredient);
-            }
+            IngredientHelper.removeIngredientById(this.ingredientsSelected, ingredient.ingredient_id);
         },
 
         emptySelectedIngredients() {
-            this.ingredientsSelected = new Ingredients();
+            this.ingredientsSelected = [];
         }
     }
 })
